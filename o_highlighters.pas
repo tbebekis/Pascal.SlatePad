@@ -1,160 +1,319 @@
 unit o_Highlighters;
 
-{$mode delphi}{$H+}
+{$mode delphi}
+{$H+}
 
 interface
 
 uses
-  SysUtils,
-  Generics.Collections,
-  SynEditHighlighter; // TSynCustomHighlighter
+  Classes, SysUtils, Contnrs, Dialogs,
+  ATSynEdit,
+  atsynedit_adapter_econtrol,
+  ec_SyntAnal; // TecSyntAnalyzer
 
 type
-  Highlighters = class
-  private
-    class var FMap: TDictionary<string, TSynCustomHighlighter>;
-    class var FInited: Boolean;
+  THighlighters = class
+  strict private
+    class var FLexlibPath: string;
+
+    // ext -> lexer base name (e.g. '.pas'='Pascal', '.md'='Markdown')
+    class var FExtMap: TStringList;
+
+    // lexer base name -> TecSyntAnalyzer (cached)
+    class var FLexerCache: TStringList;
+
+    // list of editor links (owns objects)
+    class var FEditorLinks: TObjectList;
 
     class procedure EnsureInit; static;
-    class function  NormExt(const FileName: string): string; static;
-    class procedure RegisterExt(const Ext: string; HL: TSynCustomHighlighter); static;
-    class procedure FreeAll; static;
-  public
-    // Returns a shared highlighter instance for the file extension, or nil.
-    class function GetHighlighter(const FileName: string): TSynCustomHighlighter; static;
 
-    // Optional: call at app shutdown (also called from finalization)
+    class function NormalizeExt(const S: string): string; static;
+    class function NormalizeLexerName(const S: string): string; static;
+    class function LexerFileName(const LexerName: string): string; static;
+    class function GetOrLoadAnalyzer(const LexerName: string): TecSyntAnalyzer; static;
+
+    class function FindLink(Editor: TATSynEdit): TObject; static;
+  public
+    class procedure Initialize(const ALexlibPath: string); static;
     class procedure Finalize; static;
+
+    class procedure RegisterExt(const Ext, LexerName: string); static;
+    class procedure RegisterDefaults; static;
+
+    class function GetLexerNameByFileName(const FileName: string): string; static;
+
+    // returns True if a lexer was applied, False if cleared/plain
+    class function ApplyToEditor(Editor: TATSynEdit; const FileName: string): Boolean; static;
+
+    // disable highlighting but keep link
+    class procedure ClearFromEditor(Editor: TATSynEdit); static;
+
+    // remove adapter link entirely (call before freeing editor, or when closing tab)
+    class procedure UnregisterEditor(Editor: TATSynEdit); static;
   end;
 
 implementation
 
-uses
-  SynHighlighterPas,     // TSynPasSyn
-  SynHighlighterHTML,    // TSynHTMLSyn
-  SynHighlighterXML,     // TSynXMLSyn
-  SynHighlighterCss,     // TSynCssSyn
-  SynHighlighterJScript, // TSynJScriptSyn (js/json)
-  SynHighlighterIni,     // TSynIniSyn
-  SynHighlighterSQL;     // TSynSQLSyn
+type
+  TEditorAdapterLink = class
+  public
+    Editor: TATSynEdit;
+    Adapter: TATAdapterEControl;
+    constructor Create(AEditor: TATSynEdit);
+    destructor Destroy; override;
+  end;
 
-class function Highlighters.NormExt(const FileName: string): string;
+{ TEditorAdapterLink }
+
+constructor TEditorAdapterLink.Create(AEditor: TATSynEdit);
 begin
-  Result := LowerCase(ExtractFileExt(FileName));
+  inherited Create;
+  Editor := AEditor;
+  Adapter := TATAdapterEControl.Create(Editor);
+  Adapter.AddEditor(Editor);
+  Editor.AdapterForHilite := Adapter;
 end;
 
-class procedure Highlighters.RegisterExt(const Ext: string; HL: TSynCustomHighlighter);
-var
-  K: string;
+destructor TEditorAdapterLink.Destroy;
 begin
-  K := LowerCase(Ext);
-  if (K <> '') and (HL <> nil) then
-    FMap.AddOrSetValue(K, HL);
+  //Adapter.Free;   // NO, raises exception
+  inherited Destroy;
 end;
 
-class procedure Highlighters.EnsureInit;
-var
-  PasHL: TSynPasSyn;
-  HtmlHL: TSynHTMLSyn;
-  XmlHL: TSynXMLSyn;
-  CssHL: TSynCssSyn;
-  JsHL: TSynJScriptSyn;
-  IniHL: TSynIniSyn;
-  SqlHL: TSynSQLSyn;
+{ THighlighters }
+
+class procedure THighlighters.EnsureInit;
 begin
-  if FInited then
-    Exit;
+  if FExtMap <> nil then Exit;
 
-  FMap := TDictionary<string, TSynCustomHighlighter>.Create;
+  FExtMap := TStringList.Create;
+  FExtMap.CaseSensitive := False;
+  FExtMap.Sorted := True;
+  FExtMap.Duplicates := dupIgnore;
 
-  // Create once, reuse everywhere (shared instances)
-  PasHL  := TSynPasSyn.Create(nil);
-  HtmlHL := TSynHTMLSyn.Create(nil);
-  XmlHL  := TSynXMLSyn.Create(nil);
-  CssHL  := TSynCssSyn.Create(nil);
-  JsHL   := TSynJScriptSyn.Create(nil);
-  IniHL  := TSynIniSyn.Create(nil);
-  SqlHL  := TSynSQLSyn.Create(nil);
+  FLexerCache := TStringList.Create;
+  FLexerCache.CaseSensitive := False;
+  FLexerCache.Sorted := True;
+  FLexerCache.Duplicates := dupIgnore;
 
-  // Pascal / Lazarus
-  RegisterExt('.pas', PasHL);
-  RegisterExt('.pp',  PasHL);
-  RegisterExt('.inc', PasHL);
-  RegisterExt('.lpr', PasHL);
-  RegisterExt('.lpi', XmlHL);  // Lazarus project is XML
-  RegisterExt('.lfm', PasHL);  // form source is Pascal-ish text
-
-  // Web
-  RegisterExt('.htm',  HtmlHL);
-  RegisterExt('.html', HtmlHL);
-  RegisterExt('.xml',  XmlHL);
-  RegisterExt('.xsd',  XmlHL);
-  RegisterExt('.xslt', XmlHL);
-  RegisterExt('.css',  CssHL);
-  RegisterExt('.js',   JsHL);
-  RegisterExt('.json', JsHL);  // decent default; if you add a JSON-specific HL later, swap here
-
-  // Config / data
-  RegisterExt('.ini', IniHL);
-  RegisterExt('.cfg', IniHL);
-  RegisterExt('.conf', IniHL);
-
-  // SQL
-  RegisterExt('.sql', SqlHL);
-
-  // Markdown: SynEdit doesn't ship a universal markdown HL in all installs.
-  // Leave .md as nil (plain text) unless you add your own markdown highlighter.
-  // RegisterExt('.md', <your markdown HL>);
-
-  FInited := True;
+  FEditorLinks := TObjectList.Create(True);
 end;
 
-class function Highlighters.GetHighlighter(const FileName: string): TSynCustomHighlighter;
+class function THighlighters.NormalizeExt(const S: string): string;
 var
-  Ext: string;
+  T: string;
+begin
+  T := Trim(LowerCase(S));
+  if T = '' then Exit('');
+  if T[1] <> '.' then T := '.' + T;
+  Result := T;
+end;
+
+class function THighlighters.NormalizeLexerName(const S: string): string;
+begin
+  Result := Trim(S);
+end;
+
+class function THighlighters.LexerFileName(const LexerName: string): string;
+begin
+  // Τα lexers σου είναι τύπου "Pascal.lcf", "Markdown.lcf", "Bash script.lcf" κλπ.
+  Result := IncludeTrailingPathDelimiter(FLexlibPath) + LexerName + '.lcf';
+end;
+
+class function THighlighters.GetOrLoadAnalyzer(const LexerName: string): TecSyntAnalyzer;
+var
+  Idx: Integer;
+  FN: string;
+  An: TecSyntAnalyzer;
 begin
   EnsureInit;
 
-  Ext := NormExt(FileName);
-  if (Ext <> '') and FMap.TryGetValue(Ext, Result) then
-    Exit;
+  if LexerName = '' then Exit(nil);
 
-  Result := nil;
-end;
+  Idx := FLexerCache.IndexOf(LexerName);
+  if Idx >= 0 then
+    Exit(TecSyntAnalyzer(FLexerCache.Objects[Idx]));
 
-class procedure Highlighters.FreeAll;
-var
-  Pair: TPair<string, TSynCustomHighlighter>;
-  Seen: TDictionary<TSynCustomHighlighter, Byte>;
-begin
-  if FMap = nil then
-    Exit;
+  FN := LexerFileName(LexerName);
+  if not FileExists(FN) then
+    Exit(nil);
 
-  // Multiple extensions can map to the same highlighter instance,
-  // so we must free each instance only once.
-  Seen := TDictionary<TSynCustomHighlighter, Byte>.Create;
+  An := TecSyntAnalyzer.Create(nil);
   try
-    for Pair in FMap do
-      if (Pair.Value <> nil) and (not Seen.ContainsKey(Pair.Value)) then
-      begin
-        Seen.Add(Pair.Value, 1);
-        Pair.Value.Free;
-      end;
-  finally
-    Seen.Free;
+    An.LoadFromFile(FN);
+  except
+    An.Free;
+    raise;
   end;
 
-  FMap.Free;
-  FMap := nil;
-  FInited := False;
+  FLexerCache.AddObject(LexerName, An);
+  Result := An;
 end;
 
-class procedure Highlighters.Finalize;
+class function THighlighters.FindLink(Editor: TATSynEdit): TObject;
+var
+  I: Integer;
 begin
-  FreeAll;
+  Result := nil;
+  if (Editor = nil) or (FEditorLinks = nil) then Exit;
+
+  for I := 0 to FEditorLinks.Count - 1 do
+    if TEditorAdapterLink(FEditorLinks[I]).Editor = Editor then
+      Exit(FEditorLinks[I]);
 end;
+
+class procedure THighlighters.Initialize(const ALexlibPath: string);
+begin
+  EnsureInit;
+  FLexlibPath := ExcludeTrailingPathDelimiter(ALexlibPath);
+end;
+
+class procedure THighlighters.Finalize;
+var
+  I: Integer;
+begin
+  if FLexerCache <> nil then
+  begin
+    // free cached analyzers
+    for I := 0 to FLexerCache.Count - 1 do
+      FLexerCache.Objects[I].Free;
+  end;
+
+  FreeAndNil(FEditorLinks);
+  FreeAndNil(FLexerCache);
+  FreeAndNil(FExtMap);
+  FLexlibPath := '';
+end;
+
+class procedure THighlighters.RegisterExt(const Ext, LexerName: string);
+var
+  E, L: string;
+  Idx: Integer;
+begin
+  EnsureInit;
+  E := NormalizeExt(Ext);
+  if E = '' then Exit;
+
+  L := NormalizeLexerName(LexerName);
+
+  Idx := FExtMap.IndexOfName(E);
+  if Idx >= 0 then
+    FExtMap.ValueFromIndex[Idx] := L
+  else
+    FExtMap.Add(E + '=' + L);
+end;
+
+class procedure THighlighters.RegisterDefaults;
+begin
+  RegisterExt('.pas', 'Pascal');
+  RegisterExt('.pp',  'Pascal');
+  RegisterExt('.lpr', 'Pascal');
+  RegisterExt('.lfm', 'Pascal');
+  RegisterExt('.dfm', 'Pascal');
+  RegisterExt('.lpk', 'Pascal');
+  RegisterExt('.inc', 'Pascal');
+
+  RegisterExt('.md',  'Markdown');
+  RegisterExt('.json','JSON');
+  RegisterExt('.xml', 'XML');
+  RegisterExt('.html','HTML');
+  RegisterExt('.htm', 'HTML');
+  RegisterExt('.css', 'CSS');
+  RegisterExt('.js',  'JavaScript');
+  RegisterExt('.yaml','YAML');
+  RegisterExt('.yml', 'YAML');
+
+  // Στο lexlib σου το filename είναι "Bash script.lcf"
+  RegisterExt('.sh',  'Bash script');
+end;
+
+class function THighlighters.GetLexerNameByFileName(const FileName: string): string;
+var
+  Ext: string;
+  Idx: Integer;
+begin
+  EnsureInit;
+
+  Ext := NormalizeExt(ExtractFileExt(FileName));
+  if Ext = '' then Exit('');
+
+  Idx := FExtMap.IndexOfName(Ext);
+  if Idx < 0 then Exit('');
+
+  Result := Trim(FExtMap.ValueFromIndex[Idx]);
+end;
+
+class function THighlighters.ApplyToEditor(Editor: TATSynEdit; const FileName: string): Boolean;
+var
+  LexerName: string;
+  LinkObj: TObject;
+  Link: TEditorAdapterLink;
+  An: TecSyntAnalyzer;
+begin
+  Result := False;
+  if Editor = nil then Exit;
+
+  EnsureInit;
+  if FLexlibPath = '' then Exit;
+
+  LexerName := GetLexerNameByFileName(FileName);
+
+  LinkObj := FindLink(Editor);
+  if LinkObj = nil then
+  begin
+    Link := TEditorAdapterLink.Create(Editor);
+    FEditorLinks.Add(Link);
+  end
+  else
+    Link := TEditorAdapterLink(LinkObj);
+
+  if LexerName = '' then
+  begin
+    Link.Adapter.Lexer := nil; // plain text
+    Exit(False);
+  end;
+
+  An := GetOrLoadAnalyzer(LexerName);
+  Link.Adapter.Lexer := An;
+
+  Result := Assigned(An);
+
+  //ShowMessage('Lexer: ' + LexerName);
+  //ShowMessage(LexerFileName(LexerName));
+
+  if Assigned(An) then
+  begin
+    Link.Adapter.Lexer := An;
+    Link.Adapter.ParseFromLine(0, True);
+  end;
+end;
+
+class procedure THighlighters.ClearFromEditor(Editor: TATSynEdit);
+var
+  LinkObj: TObject;
+begin
+  LinkObj := FindLink(Editor);
+  if LinkObj <> nil then
+    TEditorAdapterLink(LinkObj).Adapter.Lexer := nil;
+end;
+
+class procedure THighlighters.UnregisterEditor(Editor: TATSynEdit);
+var
+  I: Integer;
+begin
+  if (Editor = nil) or (FEditorLinks = nil) then Exit;
+
+  for I := FEditorLinks.Count - 1 downto 0 do
+    if TEditorAdapterLink(FEditorLinks[I]).Editor = Editor then
+    begin
+      FEditorLinks.Delete(I); // frees link (owns objects = True)
+      Exit;
+    end;
+end;
+
+initialization
 
 finalization
-  Highlighters.Finalize;
+  THighlighters.Finalize;
 
 end.

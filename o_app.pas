@@ -7,7 +7,10 @@ interface
 uses
   Classes
   , SysUtils
+  , Controls
   , Dialogs
+  , Graphics
+  , StdCtrls
   , System.UITypes
   , o_AppSettings
   , o_Docs
@@ -38,6 +41,8 @@ type
     // ● UI
     class procedure DisplayFileExplorer(const FileOrFolderPath: string);
     class function ShowFolderDialog(var FolderPath: string): Boolean;
+
+    class function GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
 
     // ● properties
     class property Settings: TAppSettings read fSettings;
@@ -180,6 +185,17 @@ begin
     D.Free;
   end;
 
+end;
+
+class function App.GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
+var
+  N: Integer;
+begin
+  Result := DefaultValue;
+  if not TryStrToInt(Trim(Box.Text), N) then
+    App.ErrorBox(Format('Cannot convert this value to integer: %s', [Box.Text]))
+  else
+    Result := N;
 end;
 
 

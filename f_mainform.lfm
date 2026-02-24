@@ -166,7 +166,7 @@ object MainForm: TMainForm
     TabOrder = 2
     object tabLog: TTabSheet
       Caption = 'Log'
-      ClientHeight = 91
+      ClientHeight = 88
       ClientWidth = 1014
       object edtLog: TMemo
         Left = 0
@@ -181,7 +181,7 @@ object MainForm: TMainForm
     end
     object tabFindResults: TTabSheet
       Caption = 'Results'
-      ClientHeight = 91
+      ClientHeight = 88
       ClientWidth = 1014
       object tvFindResults: TTreeView
         Left = 0
@@ -224,6 +224,12 @@ object MainForm: TMainForm
       Caption = 'View'
       object mnuBottom: TMenuItem
         Caption = 'Bottom'
+      end
+      object Separator2: TMenuItem
+        Caption = '-'
+      end
+      object mnuAppSettings: TMenuItem
+        Caption = 'Application Settings'
       end
     end
   end

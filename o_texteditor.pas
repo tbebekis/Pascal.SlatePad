@@ -121,6 +121,8 @@ type
     procedure HighlightAll();
     procedure ClearHighlights();
 
+    procedure AppSettingsChanged();
+
     property Editor: TATSynEdit read fEditor;
     property FindAndReplace: TFindAndReplace read fFindAndReplace;
 
@@ -165,6 +167,7 @@ implementation
 uses
   Math
   ,ATSynEdit_Carets
+  ,o_App
   ;
 
 
@@ -496,7 +499,11 @@ begin
   fEditor.OptMinimapVisible := False;
   fEditor.OptMinimapTooltipVisible := False;
 
+  AppSettingsChanged();
+
   fEditor.OnKeyDown := Editor_OnKeyDown;
+
+
 
   fFindAndReplace := TFindAndReplace.Create(Self);
   fFindAndReplace.Handler := Self;
@@ -506,6 +513,12 @@ destructor TTextEditor.Destroy();
 begin
   FreeAndNil(fFindAndReplace);
   inherited Destroy();
+end;
+
+procedure TTextEditor.AppSettingsChanged();
+begin
+  fEditor.Font.Name := App.Settings.FontName;
+  fEditor.Font.Size := App.Settings.FontSize;
 end;
 
 procedure TTextEditor.SetFocus();
@@ -1194,6 +1207,7 @@ begin
   SelectRangeXY(fEditor, X, Y, -1, -1, False); // keep caret, no selection
   fEditor.Update;
 end;
+
 
 procedure TTextEditor.HighlightAll();
 var

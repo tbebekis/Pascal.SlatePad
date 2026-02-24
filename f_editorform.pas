@@ -1,4 +1,4 @@
-unit fr_EditorPage;
+unit f_EditorForm;
 
 {$mode DELPHI}{$H+}
 
@@ -15,18 +15,18 @@ uses
   , ExtCtrls
   , LCLType
 
-  , fr_FramePage
+  , f_PageForm
   , o_Docs
   , o_TextEditor
   , o_FindAndReplace
 
   ;
 
+
+
 type
-
-  { TEditorPage }
-
-  TEditorPage = class(TFramePage)
+  { TEditorForm }
+  TEditorForm = class(TPageForm)
     StatusBar: TStatusBar;
     ToolBar: TToolBar;
   private
@@ -40,7 +40,7 @@ type
     FAutoSaveIdleMs: Integer;
     fTextEditor: TTextEditor;
 
-
+    IsHighlighterRegistered: Boolean;
 
     // ● event handler
     procedure AnyClick(Sender: TObject);
@@ -57,15 +57,15 @@ type
     procedure UpdateDoc();
 
     procedure ShowFindAndReplaceDialog();
+  protected
+    procedure DoClose(var CloseAction: TCloseAction); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
-    procedure ControlInitialize; override;
-    procedure ControlInitializeAfter(); override;
+    procedure ContainerInitialize; override;
 
-    procedure Close(); override;
-    function CanClosePage(): Boolean; override;
+    function CanCloseContainer(): Boolean; override;
 
     procedure TitleChanged(); override;
     procedure AdjustTabTitle(); override;
@@ -79,6 +79,8 @@ type
     property FindAndReplaceOptions : TFindAndReplaceOptions read fFindAndReplaceOptions;
   end;
 
+
+
 implementation
 
 {$R *.lfm}
@@ -87,38 +89,41 @@ uses
   Math
   ,o_App
   ,o_Highlighters
-
   ;
 
-{ TEditorPage }
+{ TEditorForm }
 
-constructor TEditorPage.Create(AOwner: TComponent);
+constructor TEditorForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
   fFindAndReplaceOptions := TFindAndReplaceOptions.Create;
+
+  fTextEditor := TTextEditor.Create(Self);
+  TextEditor.Parent := Self;
 end;
 
-destructor TEditorPage.Destroy();
+destructor TEditorForm.Destroy();
 begin
+  if IsHighlighterRegistered then
+     THighlighters.UnregisterEditor(TextEditor.Editor);
+
   fFindAndReplaceOptions.Free();
   inherited Destroy();
 end;
 
-procedure TEditorPage.ControlInitialize;
+procedure TEditorForm.ContainerInitialize;
 var
   DocText: string;
 begin
-  inherited ControlInitialize;
+  inherited ContainerInitialize;
 
   Self.CloseableByUser := True;
-
-  fTextEditor := TTextEditor.Create(Self);
-  TextEditor.Parent := Self;
 
   Doc := TTextDocument(Info);
 
   DocText := Doc.Load();
+
   TextEditor.EditorText := DocText;
   TextEditor.Modified := False;
   TextEditor.WordWrap := App.Settings.WordWrap;
@@ -147,18 +152,19 @@ begin
   TextEditor.OnChange := EditorChange;
   TextEditor.OnModifiedChanged := EditorModifiedChanged;
 
-  //if not Doc.IsBuffer then
-  //  TextEditor.Highlighter := Highlighters.GetHighlighter(Doc.FilePath);
-end;
-
-procedure TEditorPage.ControlInitializeAfter();
-begin
-  inherited ControlInitializeAfter();
-
   TextEditor.SetFocus();
+
+  if FileExists(Doc.FilePath) then
+  begin
+    THighlighters.ApplyToEditor(TextEditor.Editor, Doc.FilePath);
+    TextEditor.Editor.Invalidate;
+    TextEditor.Editor.Update;
+    IsHighlighterRegistered := True;
+  end;
+
 end;
 
-procedure TEditorPage.Close();
+procedure TEditorForm.DoClose(var CloseAction: TCloseAction);
 begin
   if (not Doc.IsBuffer) then
   begin
@@ -168,20 +174,22 @@ begin
     App.Docs.List.Remove(Doc);
     App.Docs.Save();
   end;
+
+  inherited DoClose(CloseAction);
 end;
 
-function TEditorPage.CanClosePage(): Boolean;
+function TEditorForm.CanCloseContainer(): Boolean;
 begin
   Result := True;
 end;
 
-procedure TEditorPage.TitleChanged();
+procedure TEditorForm.TitleChanged();
 begin
   TitleText := Doc.Title;
   AdjustTabTitle();
 end;
 
-procedure TEditorPage.AdjustTabTitle();
+procedure TEditorForm.AdjustTabTitle();
 begin
   if TextEditor.Modified and (not Doc.IsBuffer)  then
     ParentTabPage.Caption := TitleText + '*'
@@ -189,7 +197,7 @@ begin
     ParentTabPage.Caption := TitleText;
 end;
 
-procedure TEditorPage.UpdateDoc();
+procedure TEditorForm.UpdateDoc();
 begin
   //Doc.TopLine := TextEditor.TopLine;
   Doc.CaretX := TextEditor.CaretX;
@@ -197,7 +205,7 @@ begin
 end;
 
 
-procedure TEditorPage.ShowFindAndReplaceDialog();
+procedure TEditorForm.ShowFindAndReplaceDialog();
 var
   Term: string;
 
@@ -238,7 +246,7 @@ begin
    *)
 end;
 
-procedure TEditorPage.SaveBuffer();
+procedure TEditorForm.SaveBuffer();
 var
   DocText: string;
 begin
@@ -252,7 +260,7 @@ begin
   App.Docs.Save();
 end;
 
-procedure TEditorPage.Save();
+procedure TEditorForm.Save();
 var
   DocText: string;
 begin
@@ -269,7 +277,7 @@ begin
   end;
 end;
 
-procedure TEditorPage.SaveAs();
+procedure TEditorForm.SaveAs();
 var
   Dlg: TSaveDialog;
   DocText: string;
@@ -302,13 +310,13 @@ begin
 
 end;
 
-procedure TEditorPage.AnyClick(Sender: TObject);
+procedure TEditorForm.AnyClick(Sender: TObject);
 begin
   if btnToggleWordWrap = Sender then
     TextEditor.WordWrap := not TextEditor.WordWrap;
 end;
 
-procedure TEditorPage.EditorChange(Sender: TObject);
+procedure TEditorForm.EditorChange(Sender: TObject);
 begin
   if not App.Settings.AutoSave then
     if not Doc.IsBuffer then
@@ -318,12 +326,12 @@ begin
   FLastEditTick := GetTickCount64;
 end;
 
-procedure TEditorPage.EditorModifiedChanged(Sender: TObject);
+procedure TEditorForm.EditorModifiedChanged(Sender: TObject);
 begin
   TitleChanged();
 end;
 
-procedure TEditorPage.EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TEditorForm.EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   (*
   if (Shift = [ssCtrl]) and (Key = VK_F) then
@@ -351,11 +359,11 @@ begin
   *)
 end;
 
-procedure TEditorPage.EditorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TEditorForm.EditorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
 end;
 
-procedure TEditorPage.AutoSaveTimerTick(Sender: TObject);
+procedure TEditorForm.AutoSaveTimerTick(Sender: TObject);
 var
   NowTick: QWord;
 begin
@@ -384,7 +392,7 @@ begin
 
 end;
 
-procedure TEditorPage.PrepareToolBar();
+procedure TEditorForm.PrepareToolBar();
 var
   P: TWinControl;
 begin
@@ -403,13 +411,10 @@ begin
 
 end;
 
-procedure TEditorPage.UpdateStatusBar();
+procedure TEditorForm.UpdateStatusBar();
 begin
   StatusBar.Panels[0].Text := Format('%d: %d', [TextEditor.CaretY, TextEditor.CaretX]);
 end;
-
-
-
 
 end.
 

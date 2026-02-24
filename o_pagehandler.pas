@@ -12,10 +12,13 @@ uses
   ComCtrls,
   Forms,
   Tripous,
-  fr_FramePage;
+  //fr_FramePage
+  f_PageForm
+  ;
 
 type
-  TFramePageClass = class of TFramePage;
+  //TPageFormClass = class of TPageForm;
+
 
   { TPagerHandler }
   TPagerHandler = class
@@ -28,7 +31,7 @@ type
     FDragStartPos: TPoint;
     FDragSource: TTabSheet;
 
-    function  GetPageFrame(Tab: TTabSheet): TFramePage;
+    function  GetContainer(Tab: TTabSheet): TPageForm;
     function  FindTabUnderMouse(const P: TPoint): TTabSheet;
     procedure ArrangeTabPages(SourceTab, DestTab: TTabSheet);
 
@@ -36,16 +39,16 @@ type
     procedure PagerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure PagerMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 
-    function  EnsurePageId(AFrameClass: TFramePageClass; const PageId: string): string;
+    function  EnsurePageId(ContainerClass: TPageFormClass; const PageId: string): string;
 
-    function  CreateTabPage(AFrameClass: TFramePageClass; const PageId: string; Info: TObject): TTabSheet;
+    function  CreateTabPage(ContainerClass: TPageFormClass; const PageId: string; Info: TObject): TTabSheet;
   public
     constructor Create(APager: TPageControl);
     destructor Destroy; override;
 
     function  FindTabPagePublic(const PageId: string): TTabSheet;
     procedure ClosePage(const PageId: string);
-    function  ShowPage(AFrameClass: TFramePageClass; const PageId: string = ''; Info: TObject = nil): TTabSheet;
+    function  ShowPage(ContainerClass: TPageFormClass; const PageId: string = ''; Info: TObject = nil): TTabSheet;
     procedure CloseAll;
 
     function  FindTabPage(const PageId: string): TTabSheet;
@@ -82,13 +85,13 @@ begin
   inherited Destroy;
 end;
 
-function TPagerHandler.GetPageFrame(Tab: TTabSheet): TFramePage;
+function TPagerHandler.GetContainer(Tab: TTabSheet): TPageForm;
 begin
   Result := nil;
   if not Assigned(Tab) then Exit;
 
-  if (Tab.Tag <> 0) and (TObject(PtrInt(Tab.Tag)) is TFramePage) then
-    Result := TFramePage(TObject(PtrInt(Tab.Tag)));
+  if (Tab.Tag <> 0) and (TObject(PtrInt(Tab.Tag)) is TPageForm) then
+    Result := TPageForm(TObject(PtrInt(Tab.Tag)));
 end;
 
 function TPagerHandler.FindTabUnderMouse(const P: TPoint): TTabSheet;
@@ -126,7 +129,7 @@ end;
 procedure TPagerHandler.PagerMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Tab: TTabSheet;
-  Frame: TFramePage;
+  Container: TPageForm;
 begin
   if (Button <> mbLeft) and (Button <> mbMiddle) then
     Exit;
@@ -137,9 +140,9 @@ begin
 
   if Button = mbMiddle then
   begin
-    Frame := GetPageFrame(Tab);
-    if Assigned(Frame) and Frame.CloseableByUser then
-      ClosePage(Frame.Id);
+    Container := GetContainer(Tab);
+    if Assigned(Container) and Container.CloseableByUser then
+      ClosePage(Container.Id);
     Exit;
   end;
 
@@ -189,17 +192,17 @@ begin
   FDragSource := nil;
 end;
 
-function TPagerHandler.EnsurePageId(AFrameClass: TFramePageClass; const PageId: string): string;
+function TPagerHandler.EnsurePageId(ContainerClass: TPageFormClass; const PageId: string): string;
 begin
   Result := Trim(PageId);
   if Result = '' then
-    Result := AFrameClass.ClassName;
+    Result := ContainerClass.ClassName;
 end;
 
 function TPagerHandler.FindTabPage(const PageId: string): TTabSheet;
 var
   i: Integer;
-  Frame: TFramePage;
+  Container: TPageForm;
   IdToFind: string;
 begin
   Result := nil;
@@ -209,35 +212,38 @@ begin
 
   for i := 0 to FPager.PageCount - 1 do
   begin
-    Frame := GetPageFrame(FPager.Pages[i]);
-    if Assigned(Frame) and SameText(Frame.Id, IdToFind) then
+    Container := GetContainer(FPager.Pages[i]);
+    if Assigned(Container) and SameText(Container.Id, IdToFind) then
       Exit(FPager.Pages[i]);
   end;
 end;
 
-function TPagerHandler.CreateTabPage(AFrameClass: TFramePageClass; const PageId: string; Info: TObject): TTabSheet;
+function TPagerHandler.CreateTabPage(ContainerClass: TPageFormClass; const PageId: string; Info: TObject): TTabSheet;
 var
   Tab: TTabSheet;
-  Frame: TFramePage;
+  Container: TPageForm;
 begin
   Tab := TTabSheet.Create(FPager);
   Tab.PageControl := FPager;
   Tab.Caption := PageId;
 
-  Frame := AFrameClass.Create(Tab);
-  Frame.Parent := Tab;
-  Frame.Align := alClient;
-  Frame.Id := PageId;
-  Frame.Info := Info;
+  Container := ContainerClass.Create(Tab);
+  Container.Visible := False;
+  Container.Parent := Tab;
+  Container.Align := alClient;
+  Container.Id := PageId;
+  Container.Info := Info;
 
-  Tab.Tag := PtrInt(Frame);
+  Tab.Tag := PtrInt(Container);
 
   FPager.ActivePage := Tab;
   Result := Tab;
 
-  Frame.ControlInitialize();
+  Container.Visible := True;
 
-  Sys.RunOnce(300 * 8, Frame.ControlInitializeAfter);
+  //Container.ContainerInitialize();
+
+  //Sys.RunOnce(300 * 8, Container.PageInitializeAfter);
 end;
 
 function TPagerHandler.FindTabPagePublic(const PageId: string): TTabSheet;
@@ -248,33 +254,33 @@ end;
 procedure TPagerHandler.ClosePage(const PageId: string);
 var
   Tab: TTabSheet;
-  Frame: TFramePage;
+  Container: TPageForm;
 begin
   Tab := FindTabPage(PageId);
   if not Assigned(Tab) then Exit;
 
-  Frame := GetPageFrame(Tab);
-  if Assigned(Frame) then
+  Container := GetContainer(Tab);
+  if Assigned(Container) then
   begin
-    if not Frame.CanClosePage() then
+    if not Container.CanCloseContainer() then
       Exit;
-    Frame.Close;
-    Frame.Free();
+    Container.Close;
+    Container.Free();
   end;
 
   Tab.Free;
 end;
 
-function TPagerHandler.ShowPage(AFrameClass: TFramePageClass; const PageId: string; Info: TObject): TTabSheet;
+function TPagerHandler.ShowPage(ContainerClass: TPageFormClass; const PageId: string; Info: TObject): TTabSheet;
 var
   Id: string;
   Tab: TTabSheet;
 begin
-  Id := EnsurePageId(AFrameClass, PageId);
+  Id := EnsurePageId(ContainerClass, PageId);
 
   Tab := FindTabPage(Id);
   if not Assigned(Tab) then
-    Tab := CreateTabPage(AFrameClass, Id, Info)
+    Tab := CreateTabPage(ContainerClass, Id, Info)
   else
     FPager.ActivePage := Tab;
 
@@ -284,18 +290,18 @@ end;
 procedure TPagerHandler.CloseAll;
 var
   Tab: TTabSheet;
-  Frame: TFramePage;
+  Container: TPageForm;
 begin
   while FPager.PageCount > 0 do
   begin
     Tab := FPager.Pages[0];
-    Frame := GetPageFrame(Tab);
-    if Assigned(Frame) then
+    Container := GetContainer(Tab);
+    if Assigned(Container) then
     begin
-      if not Frame.CanClosePage() then
+      if not Container.CanCloseContainer() then
         Exit;
-      Frame.Close;
-      Frame.Free();
+      Container.Close;
+      Container.Free();
     end;
     Tab.Free;
   end;

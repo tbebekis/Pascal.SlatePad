@@ -1,0 +1,8 @@
+object PageForm: TPageForm
+  Left = 342
+  Height = 240
+  Top = 370
+  Width = 320
+  Caption = 'PageForm'
+  LCLVersion = '4.4.0.0'
+end

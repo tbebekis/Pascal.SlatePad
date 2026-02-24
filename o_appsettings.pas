@@ -15,6 +15,8 @@ type
   private
     FAutoSave: Boolean;
     FAutoSaveSecondsInterval: Integer;
+    fFontName: string;
+    fFontSize: Integer;
     fLastFilter: string;
     fLastFolderPath: string;
     fWordWrap: Boolean;
@@ -30,6 +32,8 @@ type
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property AutoSaveSecondsInterval: Integer read FAutoSaveSecondsInterval write FAutoSaveSecondsInterval;
     property WordWrap: Boolean read fWordWrap write fWordWrap;
+    property FontName: string read fFontName write fFontName;
+    property FontSize: Integer read fFontSize write fFontSize;
 
     property LastFilter: string read fLastFilter write fLastFilter;
     property LastFolderPath: string read fLastFolderPath write fLastFolderPath;

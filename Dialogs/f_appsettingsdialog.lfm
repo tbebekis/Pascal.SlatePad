@@ -1,0 +1,77 @@
+object AppSettingsDialog: TAppSettingsDialog
+  Left = 342
+  Height = 135
+  Top = 370
+  Width = 413
+  BorderStyle = bsDialog
+  Caption = 'Application Settings'
+  ClientHeight = 135
+  ClientWidth = 413
+  Position = poDesktopCenter
+  LCLVersion = '4.4.0.0'
+  object btnOK: TButton
+    Left = 255
+    Height = 25
+    Top = 105
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    TabOrder = 0
+  end
+  object btnCancel: TButton
+    Left = 331
+    Height = 25
+    Top = 105
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object chAutoSave: TCheckBox
+    Left = 22
+    Height = 23
+    Top = 14
+    Width = 88
+    Caption = 'Auto-Save'
+    TabOrder = 2
+  end
+  object chWordWrap: TCheckBox
+    Left = 22
+    Height = 23
+    Top = 40
+    Width = 94
+    Caption = 'Word Wrap'
+    TabOrder = 3
+  end
+  object Label1: TLabel
+    Left = 168
+    Height = 16
+    Top = 21
+    Width = 114
+    Caption = 'Interval in Seconds'
+  end
+  object edtAutoSaveSecondsInterval: TEdit
+    Left = 288
+    Height = 28
+    Top = 14
+    Width = 80
+    Alignment = taRightJustify
+    TabOrder = 4
+    Text = '5'
+  end
+  object lblFont: TLabel
+    Left = 72
+    Height = 16
+    Top = 70
+    Width = 119
+    Caption = 'Font Name and SIze'
+  end
+  object Label2: TLabel
+    Left = 24
+    Height = 16
+    Top = 70
+    Width = 31
+    Caption = 'Font:'
+  end
+end

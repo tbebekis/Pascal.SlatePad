@@ -22,7 +22,6 @@ type
     fCaretY: Integer;
     fFilePath: string;
 
-
     fId: string;
     fLastSavedUtc: TDateTime;
     fTopLine: Integer;

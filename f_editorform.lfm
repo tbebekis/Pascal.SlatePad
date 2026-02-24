@@ -1,21 +1,21 @@
-inherited EditorPage: TEditorPage
-  Height = 518
-  Width = 666
-  ClientHeight = 518
-  ClientWidth = 666
+inherited EditorForm: TEditorForm
+  Height = 396
+  Width = 641
+  ClientHeight = 396
+  ClientWidth = 641
   object ToolBar: TToolBar[0]
     Left = 0
     Height = 26
     Top = 0
-    Width = 666
+    Width = 641
     Caption = 'ToolBar'
     TabOrder = 0
   end
   object StatusBar: TStatusBar[1]
     Left = 0
     Height = 18
-    Top = 500
-    Width = 666
+    Top = 378
+    Width = 641
     Panels = <    
       item
         Width = 50

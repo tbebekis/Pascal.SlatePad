@@ -72,22 +72,6 @@
         <UnitName Value="o_AppSettings"/>
       </Unit>
       <Unit>
-        <Filename Value="fr_framepage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FramePage"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_FramePage"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_editorpage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditorPage"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_EditorPage"/>
-      </Unit>
-      <Unit>
         <Filename Value="o_pagehandler.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_PageHandler"/>
@@ -133,6 +117,34 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_FindAndReplaceInFilesDialog"/>
       </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_appsettingsdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AppSettingsDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_AppSettingsDialog"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_pageform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PageForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_PageForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_editorform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_EditorForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_filer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Filer"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -142,7 +154,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../Pascal.Tripous;../../../.lazarus/onlinepackagemanager/packages/BGRABitmap/bgrabitmap;../Packages/EncConv-2024.12.15/encconv;../Packages/ATFlatControls-2026.02.06/atflatcontrols;../Packages/ATSynEdit-2026.02.21/atsynedit;Dialogs"/>
+      <OtherUnitFiles Value="../Pascal.Tripous;../../../.lazarus/onlinepackagemanager/packages/BGRABitmap/bgrabitmap;../Packages/EncConv-2024.12.15/encconv;../Packages/ATFlatControls-2026.02.06/atflatcontrols;../Packages/ATSynEdit-2026.02.21/atsynedit;../Packages/EControl-2026.01.19/econtrol;../Packages/ATSynEdit_Ex-2026.01.19/atsynedit_ex;../Packages/ATLexers"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

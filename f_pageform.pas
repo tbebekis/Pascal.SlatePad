@@ -1,4 +1,4 @@
-unit fr_FramePage;
+unit f_PageForm;
 
 {$mode DELPHI}{$H+}
 
@@ -8,35 +8,38 @@ uses
   Classes
   , SysUtils
   , Forms
-  , ComCtrls
   , Controls
+  , ComCtrls
+  , Graphics
+  , Dialogs
   , LCLType
   , Tripous.Broadcaster
   ;
 
 type
 
-  { TFramePage }
-
-  TFramePage = class(TFrame)
+  { TPageForm }
+  TPageForm = class(TForm)
   private
     fCloseableByUser: Boolean;
     fId: string;
     fInfo: TObject;
+    fIsInitialized: Boolean;
+
   protected
     TitleText: string;
     fBroadcasterToken: TBroadcastToken;
     function GetParentTabPage: TTabSheet; virtual;
 
+    procedure DoShow; override;
+    procedure DoClose(var CloseAction: TCloseAction); override;
     procedure OnBroadcasterEvent(Args: TBroadcasterArgs); virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    procedure ControlInitialize(); virtual;
-    procedure ControlInitializeAfter(); virtual;
-    procedure Close(); virtual;
-    function CanClosePage(): Boolean; virtual;
+    procedure ContainerInitialize(); virtual;
+    function CanCloseContainer(): Boolean; virtual;
 
     procedure TitleChanged(); virtual;
     procedure AdjustTabTitle(); virtual;
@@ -54,7 +57,10 @@ type
     property Info: TObject read fInfo write fInfo;
 
     property ParentTabPage: TTabSheet read GetParentTabPage;
+    property IsInitialized: Boolean read fIsInitialized;
   end;
+
+  TPageFormClass = class of TPageForm;
 
 implementation
 
@@ -66,29 +72,32 @@ uses
   ;
 
 
-{ TFramePage }
+{ TPageForm }
 
-constructor TFramePage.Create(AOwner: TComponent);
+constructor TPageForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  BorderStyle := bsNone;
+  BorderIcons := [];
+  Position := poDesigned;
+  ShowInTaskBar := stNever;
+  Align := alClient;
+
   fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
 end;
 
-destructor TFramePage.Destroy;
+destructor TPageForm.Destroy;
 begin
   Broadcaster.Unregister(fBroadcasterToken);
   inherited Destroy;
 end;
 
-procedure TFramePage.ControlInitialize();
+procedure TPageForm.ContainerInitialize();
 begin
 end;
 
-procedure TFramePage.ControlInitializeAfter();
-begin
-end;
-
-function TFramePage.GetParentTabPage: TTabSheet;
+function TPageForm.GetParentTabPage: TTabSheet;
 begin
   if Self.Parent is TTabSheet then
      Result := Self.Parent as TTabSheet
@@ -96,43 +105,53 @@ begin
     Result := nil;
 end;
 
-procedure TFramePage.TitleChanged();
+procedure TPageForm.DoShow;
+begin
+  inherited DoShow;
+  if not IsInitialized then
+  begin
+    ContainerInitialize();
+    fIsInitialized := True;
+  end;
+
+end;
+
+procedure TPageForm.DoClose(var CloseAction: TCloseAction);
+begin
+  inherited DoClose(CloseAction);
+end;
+
+procedure TPageForm.TitleChanged();
 begin
   AdjustTabTitle();
 end;
 
-procedure TFramePage.AdjustTabTitle();
+procedure TPageForm.AdjustTabTitle();
 begin
 end;
 
-procedure TFramePage.OnBroadcasterEvent(Args: TBroadcasterArgs);
+procedure TPageForm.OnBroadcasterEvent(Args: TBroadcasterArgs);
 begin
 end;
 
-procedure TFramePage.Close();
-begin
-  // nothing
-end;
-
-function TFramePage.CanClosePage(): Boolean;
+function TPageForm.CanCloseContainer(): Boolean;
 begin
   Result := True;
 end;
 
-procedure TFramePage.SaveEditorText(TextEditor: TObject);
+procedure TPageForm.SaveEditorText(TextEditor: TObject);
 begin
 end;
 
-function TFramePage.AddButton(AToolBar: TToolBar; const AIconName: string; const AHint: string; AOnClick: TNotifyEvent): TToolButton;
+function TPageForm.AddButton(AToolBar: TToolBar; const AIconName: string; const AHint: string; AOnClick: TNotifyEvent): TToolButton;
 begin
   Result := IconList.AddButton(AToolBar, AIconName, AHint, AOnClick);
 end;
 
-function TFramePage.AddSeparator(AToolBar: TToolBar): TToolButton;
+function TPageForm.AddSeparator(AToolBar: TToolBar): TToolButton;
 begin
   Result := IconList.AddSeparator(AToolBar);
 end;
-
 
 
 end.

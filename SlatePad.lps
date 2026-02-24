@@ -7,9 +7,7 @@
       <Unit>
         <Filename Value="SlatePad.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="42" Y="27"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="42"/>
       </Unit>
       <Unit>
         <Filename Value="f_mainform.pas"/>
@@ -18,10 +16,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_MainForm"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="114"/>
-        <CursorPos X="78" Y="118"/>
-        <UsageCount Value="58"/>
+        <TopLine Value="149"/>
+        <CursorPos X="34" Y="153"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -29,98 +26,75 @@
         <Filename Value="o_docs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Docs"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="364"/>
-        <CursorPos X="3" Y="342"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="175"/>
+        <CursorPos X="106" Y="188"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="../Pascal.Tripous/tripous.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="Tripous"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1181"/>
-        <CursorPos X="82" Y="1199"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="5490"/>
+        <CursorPos X="52" Y="5509"/>
+        <UsageCount Value="42"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_app.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_App"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="29"/>
-        <CursorPos X="20" Y="44"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="20"/>
+        <UsageCount Value="42"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_appsettings.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_AppSettings"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="28" Y="35"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="39"/>
+        <CursorPos X="71" Y="61"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_framepage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FramePage"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_FramePage"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="44"/>
-        <CursorPos X="24" Y="44"/>
-        <UsageCount Value="58"/>
-      </Unit>
-      <Unit>
-        <Filename Value="fr_editorpage.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditorPage"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fr_EditorPage"/>
-        <EditorIndex Value="7"/>
-        <TopLine Value="57"/>
-        <CursorPos X="29" Y="76"/>
-        <UsageCount Value="58"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_pagehandler.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_PageHandler"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="216"/>
-        <CursorPos X="3" Y="223"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="10"/>
+        <TopLine Value="282"/>
+        <CursorPos X="4" Y="291"/>
+        <UsageCount Value="42"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_consts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Consts"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="58" Y="5"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="42"/>
       </Unit>
       <Unit>
         <Filename Value="o_highlighters.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Highlighters"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="30" Y="9"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="196"/>
+        <CursorPos X="42" Y="203"/>
+        <UsageCount Value="42"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_texteditor.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_TextEditor"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="105"/>
-        <CursorPos X="29" Y="111"/>
-        <UsageCount Value="51"/>
+        <EditorIndex Value="11"/>
+        <TopLine Value="510"/>
+        <CursorPos X="5" Y="528"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -130,272 +104,19 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_FindAndReplaceDialog"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="83"/>
-        <CursorPos X="15" Y="114"/>
-        <UsageCount Value="51"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/lazutils/fileutil.pas"/>
-        <UnitName Value="FileUtil"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="41"/>
-        <CursorPos X="51" Y="67"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/datih.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="103"/>
-        <CursorPos X="29" Y="196"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/lazutils/lazsysutils.pas"/>
-        <UnitName Value="LazSysUtils"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="46" Y="14"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/packages/rtl-generics/src/generics.collections.pas"/>
-        <UnitName Value="Generics.Collections"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="403"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/classesh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="411"/>
-        <CursorPos X="3" Y="429"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/collect.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="4"/>
-        <CursorPos X="3" Y="32"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/menus.pp"/>
-        <UnitName Value="Menus"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="334"/>
-        <CursorPos X="14" Y="351"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/lazutils/laztracer.pas"/>
-        <UnitName Value="LazTracer"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="40"/>
-        <CursorPos X="33" Y="49"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedit.pp"/>
-        <UnitName Value="SynEdit"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="286"/>
-        <CursorPos X="3" Y="290"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/synedittypes.pp"/>
-        <UnitName Value="SynEditTypes"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="90"/>
-        <CursorPos X="39" Y="117"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/dialogs.pp"/>
-        <UnitName Value="Dialogs"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="179"/>
-        <CursorPos X="20" Y="198"/>
-        <UsageCount Value="5"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/forms.pp"/>
-        <UnitName Value="Forms"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="150"/>
-        <CursorPos X="3" Y="168"/>
-        <UsageCount Value="7"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/inc/objpash.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="281"/>
-        <CursorPos X="24" Y="304"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/lazsynedittext.pas"/>
-        <UnitName Value="LazSynEditText"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1906"/>
-        <CursorPos X="63" Y="1920"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditwrappedview.pp"/>
-        <UnitName Value="SynEditWrappedView"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1562"/>
-        <CursorPos X="46" Y="1580"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/syneditmiscclasses.pp"/>
-        <UnitName Value="SynEditMiscClasses"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="333"/>
-        <CursorPos X="14" Y="347"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/components/synedit/lazsyntextarea.pp"/>
-        <UnitName Value="LazSynTextArea"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1889"/>
-        <CursorPos X="38" Y="1894"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit.pas"/>
-        <UnitName Value="ATSynEdit"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="5898"/>
-        <CursorPos Y="5913"/>
-        <UsageCount Value="18"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit_adapter_ime_gtk2.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="121"/>
-        <CursorPos X="45" Y="128"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit_defines.inc"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="6"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/controls.pp"/>
-        <UnitName Value="Controls"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="2336"/>
-        <CursorPos X="14" Y="2349"/>
-        <UsageCount Value="18"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/lclclasses.pp"/>
-        <UnitName Value="LCLClasses"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="41"/>
-        <CursorPos X="15" Y="50"/>
-        <UsageCount Value="7"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/compon.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="667"/>
-        <CursorPos X="103" Y="687"/>
-        <UsageCount Value="7"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/classes/persist.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="133"/>
-        <CursorPos X="31" Y="154"/>
-        <UsageCount Value="7"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/unix/sysutils.pp"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="55" Y="21"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/osutilsh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="35"/>
-        <CursorPos X="3" Y="62"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/filutilh.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="150"/>
-        <CursorPos X="27" Y="156"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/inc/objpas.inc"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1058"/>
-        <CursorPos X="45" Y="1043"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="42"/>
       </Unit>
       <Unit>
         <Filename Value="o_findandreplace.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_FindAndReplace"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="87"/>
-        <CursorPos X="3" Y="90"/>
-        <UsageCount Value="44"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="/usr/share/lazarus/4.4.0/lcl/lcltype.pp"/>
-        <UnitName Value="LCLType"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="462"/>
-        <CursorPos X="3" Y="480"/>
-        <UsageCount Value="18"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atstrings.pas"/>
-        <UnitName Value="ATStrings"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="13"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit_globals.pas"/>
-        <UnitName Value="ATSynEdit_Globals"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="10"/>
-        <UsageCount Value="9"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit_carets.pas"/>
-        <UnitName Value="ATSynEdit_Carets"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1174"/>
-        <CursorPos Y="1192"/>
-        <UsageCount Value="13"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit_markers.pas"/>
-        <UnitName Value="ATSynEdit_Markers"/>
-        <EditorIndex Value="-1"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="42"/>
       </Unit>
       <Unit>
         <Filename Value="o_findandreplaceinfiles.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_FindAndReplaceInFiles"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="490"/>
-        <CursorPos X="58" Y="493"/>
-        <UsageCount Value="30"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="42"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_findandreplaceinfilesdialog.pas"/>
@@ -404,134 +125,270 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_FindAndReplaceInFilesDialog"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="144"/>
-        <CursorPos X="55" Y="154"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="42"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Dialogs/f_appsettingsdialog.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="AppSettingsDialog"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_AppSettingsDialog"/>
+        <UsageCount Value="42"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_pageform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PageForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_PageForm"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="122"/>
+        <CursorPos X="29" Y="16"/>
+        <UsageCount Value="42"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_editorform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="EditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="f_EditorForm"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="115"/>
+        <CursorPos X="59" Y="133"/>
+        <UsageCount Value="40"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_framepage.pas"/>
+        <ComponentName Value="FramePage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_FramePage"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="98"/>
+        <CursorPos X="51" Y="107"/>
+        <UsageCount Value="21"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fr_editorpage.pas"/>
+        <ComponentName Value="EditorPage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="fr_EditorPage"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="148"/>
+        <CursorPos X="79" Y="164"/>
+        <UsageCount Value="21"/>
+        <LoadedDesigner Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/include/wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="7566"/>
+        <CursorPos Y="7578"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Pascal.Tripous/tripous.logs.pas"/>
+        <UnitName Value="Tripous.Logs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2101"/>
+        <CursorPos X="31" Y="2122"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="149"/>
+        <CursorPos X="3" Y="168"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/controls.pp"/>
+        <UnitName Value="Controls"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="2449"/>
+        <CursorPos X="37" Y="2468"/>
+        <UsageCount Value="8"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Packages/ATSynEdit_Ex-2026.01.19/atsynedit_ex/atsynedit_adapter_econtrol.pas"/>
+        <UnitName Value="ATSynEdit_Adapter_EControl"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="249"/>
+        <CursorPos X="43" Y="255"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Packages/EControl-2026.01.19/econtrol/ec_syntanal.pas"/>
+        <UnitName Value="ec_SyntAnal"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="711"/>
+        <CursorPos X="41" Y="721"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="908"/>
+        <CursorPos X="11" Y="923"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="../Packages/ATSynEdit-2026.02.21/atsynedit/atsynedit.pas"/>
+        <UnitName Value="ATSynEdit"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1663"/>
+        <CursorPos X="30" Y="1687"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="o_filer.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="o_Filer"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="308"/>
+        <CursorPos X="26" Y="325"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="/usr/share/fpcsrc/3.2.2/rtl/objpas/sysutils/sysutilh.inc"/>
+        <EditorIndex Value="9"/>
+        <TopLine Value="87"/>
+        <CursorPos X="4" Y="104"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="o_findandreplace.pas"/>
-        <Caret Line="47" Column="12" TopLine="32"/>
+        <Filename Value="f_editorform.pas"/>
+        <Caret Line="162" Column="28" TopLine="144"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="336" Column="52" TopLine="315"/>
+        <Filename Value="f_editorform.pas"/>
+        <Caret Line="43" Column="38" TopLine="28"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplace.pas"/>
-        <Caret Line="47" Column="15" TopLine="34"/>
+        <Filename Value="f_pageform.pas"/>
+        <Caret Line="60" Column="57" TopLine="40"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="404" TopLine="389"/>
+        <Filename Value="f_pageform.pas"/>
+        <Caret Line="114" Column="27" TopLine="88"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="657" Column="81" TopLine="647"/>
+        <Filename Value="o_docs.pas"/>
+        <Caret Line="37" Column="19" TopLine="23"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="112" Column="17" TopLine="96"/>
+        <Filename Value="o_docs.pas"/>
+        <Caret Line="188" Column="106" TopLine="175"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="507" Column="3" TopLine="489"/>
+        <Filename Value="../Pascal.Tripous/tripous.pas"/>
+        <Caret Line="1151" Column="21" TopLine="1134"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="26" Column="3" TopLine="31"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="13" Column="37"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="112" Column="22" TopLine="86"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="552" Column="5" TopLine="515"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="481" Column="10" TopLine="458"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="356" Column="33" TopLine="7"/>
       </Position>
       <Position>
-        <Filename Value="Dialogs/f_findandreplaceinfilesdialog.pas"/>
-        <Caret Column="35"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="32" Column="71" TopLine="15"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="51" Column="93" TopLine="29"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="55" Column="29" TopLine="27"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="43" Column="5" TopLine="29"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="33" Column="13" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="399" Column="3" TopLine="384"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="55" Column="29" TopLine="34"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="42" Column="16" TopLine="32"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="146" Column="67" TopLine="129"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="409" Column="50" TopLine="372"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="5" Column="51"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="43" Column="5" TopLine="29"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="343" Column="72" TopLine="324"/>
       </Position>
       <Position>
-        <Filename Value="Dialogs/f_findandreplaceinfilesdialog.pas"/>
-        <Caret Line="44" Column="21" TopLine="38"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="64" Column="44" TopLine="43"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="479" Column="76" TopLine="464"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="89" Column="3" TopLine="87"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="118" Column="22" TopLine="102"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="67" Column="35" TopLine="50"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="714" Column="5" TopLine="684"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="115" Column="52" TopLine="110"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="658" Column="29" TopLine="639"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="37" Column="65" TopLine="28"/>
       </Position>
       <Position>
-        <Filename Value="o_appsettings.pas"/>
-        <Caret Line="35" Column="80"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="340" Column="24" TopLine="325"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="124" Column="21" TopLine="106"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="326" Column="26" TopLine="335"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="510" Column="16" TopLine="492"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="356" Column="3" TopLine="339"/>
       </Position>
       <Position>
-        <Filename Value="o_findandreplaceinfiles.pas"/>
-        <Caret Line="136" Column="9" TopLine="126"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="424" Column="16" TopLine="395"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="115" Column="35" TopLine="107"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="410" Column="11" TopLine="395"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="113" Column="37" TopLine="55"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="352" Column="37" TopLine="337"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="72" Column="15" TopLine="57"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="355" Column="3" TopLine="338"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="192" Column="12" TopLine="181"/>
+        <Filename Value="o_filer.pas"/>
+        <Caret Line="512" Column="11" TopLine="501"/>
       </Position>
     </JumpHistory>
     <RunParams>
