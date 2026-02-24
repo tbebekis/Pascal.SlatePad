@@ -1,0 +1,59 @@
+{
+  "ActivePageIndex" : 2,
+  "List" : [
+    {
+      "BufferIndex" : 0,
+      "CaretX" : 19,
+      "CaretY" : 3,
+      "FilePath" : "/home/teo/Temp/Demo.txt",
+      "Id" : "3FE30B0D-5C7A-4BEB-A04F-EA588E57253F",
+      "LastSavedUtc" : "2026-02-22T22:33:03",
+      "TopLine" : 1
+    },
+    {
+      "BufferIndex" : 1,
+      "CaretX" : 50,
+      "CaretY" : 4,
+      "FilePath" : "",
+      "Id" : "5728F8E6-519E-4782-9BF5-DE93C153E450",
+      "LastSavedUtc" : "2026-02-22T22:33:28",
+      "TopLine" : 1
+    },
+    {
+      "BufferIndex" : 0,
+      "CaretX" : 0,
+      "CaretY" : 0,
+      "FilePath" : "/home/teo/Dev/Stories/The_Corpers/1. The Corp of the World/8. The Truth is Disturbing/4. The Monastery/Text.txt",
+      "Id" : "0370EE8E-7566-4539-BD35-A530D02A6BFD",
+      "LastSavedUtc" : "2026-02-24T00:23:33",
+      "TopLine" : 0
+    },
+    {
+      "BufferIndex" : 0,
+      "CaretX" : 0,
+      "CaretY" : 0,
+      "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/fr_notelist.lfm",
+      "Id" : "81E4C1AE-8CED-4244-91D6-A2AB13A79BAD",
+      "LastSavedUtc" : "2026-02-21T22:38:21",
+      "TopLine" : 0
+    },
+    {
+      "BufferIndex" : 0,
+      "CaretX" : 0,
+      "CaretY" : 0,
+      "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/fr_notelist.pas",
+      "Id" : "D3304A73-4210-4C0D-B9F2-4C2CDB75D86B",
+      "LastSavedUtc" : "2026-02-21T22:38:21",
+      "TopLine" : 0
+    },
+    {
+      "BufferIndex" : 0,
+      "CaretX" : 0,
+      "CaretY" : 0,
+      "FilePath" : "/home/teo/Dev/Stories/The_Corpers/1. The Corp of the World/1. A Day of Fire/1. The Siege/Text.txt",
+      "Id" : "B549A3A7-0DAD-4218-8861-CEC075E853F0",
+      "LastSavedUtc" : "2026-02-24T00:24:44",
+      "TopLine" : 0
+    }
+  ]
+}
