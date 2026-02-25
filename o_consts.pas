@@ -8,11 +8,17 @@ uses
   Classes, SysUtils;
 
 const
-  IconResourceNames: array[0..0] of string = (
-  'TEXT_DOCUMENT_WRAP'
+  IconResourceNames: array[0..5] of string = (
+  'DISK'
+  ,'DISK_MULTIPLE'
+  ,'TEXT_DOCUMENT_WRAP'
+  ,'DOOR_OUT'
+  ,'PAGE_FIND'
+  ,'FOLDER_GO'
   );
 
 implementation
 
 end.
+
 

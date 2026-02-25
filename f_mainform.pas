@@ -14,13 +14,14 @@ uses
   , Menus
   , Buttons
   , LCLType
-  , ComCtrls, ExtCtrls, StdCtrls
+  , ComCtrls
+  , ExtCtrls
+  , StdCtrls
   , Generics.Collections
   , o_PageHandler
   , o_Docs
   , o_FindAndReplaceInFiles
-  //, fr_EditorPage
-  ,f_EditorForm
+  , f_EditorForm
   ;
 
 type
@@ -30,9 +31,13 @@ type
   TMainForm = class(TForm)
     MainMenu: TMainMenu;
     edtLog: TMemo;
+    mnuFindInFiles: TMenuItem;
+    Separator3: TMenuItem;
+    mnuCloseAll: TMenuItem;
+    mnuSaveAll: TMenuItem;
     mnuAppSettings: TMenuItem;
     Separator2: TMenuItem;
-    mnuBottom: TMenuItem;
+    mnuToggleBottom: TMenuItem;
     mnuExit: TMenuItem;
     BottomPager: TPageControl;
     Pager: TPageControl;
@@ -42,14 +47,12 @@ type
     mnuOpen: TMenuItem;
     mnuNew: TMenuItem;
     mnuView: TMenuItem;
-    mnuEdit: TMenuItem;
     mnuFile: TMenuItem;
     Splitter: TSplitter;
     TabSheet1: TTabSheet;
     tabLog: TTabSheet;
     tabFindResults: TTabSheet;
     tvFindResults: TTreeView;
-
   private
     PageHandler : TPagerHandler;
     FindAndReplaceInFiles: TFindAndReplaceInFiles;
@@ -69,12 +72,16 @@ type
     procedure tvFindResults_DoubleClick(Sender: TObject);
 
     procedure NewDoc();
-    procedure OpenDoc();
+    procedure OpenDoc(); overload;
+    procedure OpenDoc(const FilePath: string); overload;
 
     function GetActiveEditorPage(): TEditorForm;
     procedure SetBottomPagerVisible(AValue: Boolean);
 
     procedure AppSettingsChanged();
+
+    procedure SaveAll();
+    procedure InitializeHighlighters();
   protected
     procedure DoCreate; override;
     procedure DoDestroy; override;
@@ -103,6 +110,7 @@ uses
 
   ,f_AppSettingsDialog
   ,o_Highlighters
+  ,Zipper
 
   ;
 
@@ -111,8 +119,6 @@ uses
 { TMainForm }
 
 constructor TMainForm.Create(AOwner: TComponent);
-var
-  Folder: string;
 begin
   inherited Create(AOwner);
 
@@ -130,6 +136,8 @@ begin
   PageHandler := TPagerHandler.Create(Pager);
   PageHandler.OnTabPagesArranged := PageHandlerOnPagesArranged;
 
+  App.PageHandler := PageHandler;
+
   Pager.OnChange := PagerOnChange;
 
   AllowDropFiles := True;
@@ -138,10 +146,7 @@ begin
   Application.Icon := MainForm.Icon;
   tvFindResults.ReadOnly := True;
 
-  Folder := IncludeTrailingPathDelimiter(ExtractFilePath(ParamStr(0)));
-  Folder := Sys.CombinePath(Folder, 'ATLexers');
-  THighlighters.Initialize(Folder);
-  THighlighters.RegisterDefaults;
+  InitializeHighlighters();
 end;
 
 destructor TMainForm.Destroy;
@@ -151,6 +156,45 @@ begin
   inherited Destroy;
 end;
 
+procedure TMainForm.InitializeHighlighters();
+var
+  FolderPath: string;
+  ZipFilePath: string;
+  ResName : string;
+  RS : TResourceStream;
+  UnZ: TUnZipper;
+begin
+
+  FolderPath := Sys.CombinePath(App.GetExeFolderPath(), 'Highlighters');
+  if not DirectoryExists(FolderPath) then
+  begin
+    ResName := 'HIGHLIGHTERS';
+    ZipFilePath := Sys.CombinePath(App.GetExeFolderPath(), 'Highlighters.zip');
+
+    RS := TResourceStream.Create(HInstance, ResName, RT_RCDATA);
+    try
+      RS.SaveToFile(ZipFilePath);
+    finally
+      RS.Free;
+    end;
+
+    UnZ := TUnZipper.Create;
+    try
+      UnZ.FileName := ZipFilePath;
+      UnZ.OutputPath := IncludeTrailingPathDelimiter(App.GetExeFolderPath());
+      UnZ.Examine;
+      UnZ.UnZipAllFiles;
+    finally
+      UnZ.Free;
+    end;
+  end;
+
+  if DirectoryExists(FolderPath) then
+  begin
+    THighlighters.Initialize(FolderPath);
+    THighlighters.RegisterDefaults;
+  end;
+end;
 procedure TMainForm.DoCreate;
 begin
   inherited DoCreate;
@@ -164,10 +208,20 @@ begin
 end;
 
 procedure TMainForm.DoShow;
+var
+  FilePath: string;
 begin
   inherited DoShow;
 
   BottomPagerVisible := False;
+  PagerOnChange(nil);
+
+  if ParamCount > 0 then
+  begin
+    FilePath := ParamStr(1);
+    if FileExists(FilePath) then
+      OpenDoc(FilePath);
+  end;
 end;
 
 procedure TMainForm.DoClose(var CloseAction: TCloseAction);
@@ -183,14 +237,11 @@ begin
   begin
     Key := 0;
     PerformFindInFiles();
-
     Exit;
   end;
 
   inherited KeyDown(Key, Shift);
 end;
-
-
 
 function TMainForm.GetBottomPagerVisible: Boolean;
 begin
@@ -222,7 +273,6 @@ begin
   end;
 end;
 
-
 procedure TMainForm.FormInitialize();
 begin
   mnuNew.OnClick := AnyClick;
@@ -231,7 +281,11 @@ begin
   mnuSaveAs.OnClick := AnyClick;
   mnuExit.OnClick := AnyClick;
 
-  mnuBottom.OnClick := AnyClick;
+  mnuSaveAll.OnClick := AnyClick;
+  mnuCloseAll.OnClick := AnyClick;
+
+  mnuToggleBottom.OnClick := AnyClick;
+  mnuFindInFiles.OnClick := AnyClick;
   mnuAppSettings.OnClick := AnyClick;
 
   tvFindResults.OnDblClick := tvFindResults_DoubleClick;
@@ -248,6 +302,8 @@ var
   Item: TCollectionItem;
   Doc: TTextDocument;
 begin
+  LogBox.AppendLine('Loading documents. Please wait...');
+
   for Item in App.Docs.List do
   begin
     Doc := TTextDocument(Item);
@@ -276,11 +332,20 @@ begin
     EditorPage := GetActiveEditorPage();
     if Assigned(EditorPage) then
       EditorPage.SaveAs();
+  end else if mnuSaveAll = Sender then
+  begin
+    SaveAll();
+  end else if mnuCloseAll = Sender then
+  begin
+    LogBox.AppendLine('Closing all documents');
+    PageHandler.CloseAll();
   end else if mnuExit = Sender then
   begin
     Close();
-  end else if mnuBottom = Sender then
+  end else if mnuToggleBottom = Sender then
     BottomPagerVisible := not BottomPagerVisible
+  else if mnuFindInFiles = Sender then
+    PerformFindInFiles()
   else if mnuAppSettings = Sender then
   begin
     if TAppSettingsDialog.ShowDialog() then
@@ -288,12 +353,42 @@ begin
   end;
 end;
 
+procedure TMainForm.SaveAll();
+var
+  i : Integer;
+  TabPage: TTabSheet;
+  EditorPage: TEditorForm;
+begin
+  LogBox.AppendLine('Saving all documents');
+  for i := 0 to Pager.PageCount - 1 do
+  begin
+    TabPage := Pager.Pages[i];
+    if TabPage.Tag > 0 then
+    begin
+      EditorPage := TEditorForm(TabPage.Tag);
+
+      if EditorPage.Doc.IsBuffer or EditorPage.TextEditor.Modified then
+        if App.QuestionBox(Format('Save changes in "%s"?', [EditorPage.Doc.Title])) then
+          EditorPage.Save();
+    end;
+  end;
+end;
+
 procedure TMainForm.PagerOnChange(Sender: TObject);
+var
+  EditorForm: TEditorForm;
 begin
   if Pager.PageCount > 0 then
     App.Docs.ActivePageIndex := Pager.ActivePageIndex
   else
     App.Docs.ActivePageIndex := -1;
+
+  EditorForm := GetActiveEditorPage();
+  if Assigned(EditorForm) then
+  begin
+    EditorForm.SetFocus();
+    EditorForm.SetFocusedControl(EditorForm.TextEditor.Editor);
+  end;
 end;
 
 procedure TMainForm.PageHandlerOnPagesArranged(Sender: TObject);
@@ -346,11 +441,13 @@ var
   FilePath: string;
   Doc : TTextDocument;
   TabPage: TTabSheet;
-  EditorPage: TEditorForm;
+  EditorForm: TEditorForm;
 begin
 
   FilePath := '';
 
+  FM := nil;
+  TM := nil;
   Node := tvFindResults.Selected;
 
   if Assigned(Node) and Assigned(Node.Data) then
@@ -376,10 +473,25 @@ begin
     TabPage := PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
     if Assigned(TabPage) and (TabPage.Tag > 0) then
     begin
-      EditorPage:= TEditorForm(TabPage.Tag);
-      EditorPage.TextEditor.FindAndReplace.Options.Clear();
-      EditorPage.TextEditor.FindAndReplace.Options.TextToFind := FindAndReplaceInFiles.Options.Term;
-      EditorPage.TextEditor.HighlightAll();
+      Pager.ActivePage := TabPage;
+
+      EditorForm := TEditorForm(TabPage.Tag);
+      EditorForm.SetFocus();
+      EditorForm.SetFocusedControl(EditorForm.TextEditor.Editor);
+      Application.ProcessMessages();
+
+      EditorForm.TextEditor.FindAndReplace.Options.Clear();
+      EditorForm.TextEditor.FindAndReplace.Options.TextToFind := FindAndReplaceInFiles.Options.Term;
+      EditorForm.TextEditor.HighlightAll();
+
+      if Assigned(TM) then
+      begin
+        EditorForm.TextEditor.SetCaretPos(TM.Column, TM.Line);
+        EditorForm.UpdateStatusBar();
+        Application.ProcessMessages();
+
+        EditorForm.TextEditor.HighlightAll();
+      end;
     end;
   end;
 
@@ -391,12 +503,13 @@ var
 begin
   Doc := App.Docs.CreateNewBufferDocument();
   PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+
+  LogBox.AppendLine(Format('New document created: %s', [Doc.RealFilePath]));
 end;
 
 procedure TMainForm.OpenDoc();
 var
   Dlg: TOpenDialog;
-  Doc: TTextDocument;
 begin
   Dlg := TOpenDialog.Create(nil);
   try
@@ -411,11 +524,26 @@ begin
 
     if Dlg.Execute() then
     begin
-      Doc := App.Docs.OpenDoc(Dlg.FileName);
-      PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+      OpenDoc(Dlg.FileName);
     end;
   finally
     Dlg.Free;
+  end;
+end;
+
+procedure TMainForm.OpenDoc(const FilePath: string);
+var
+  Doc: TTextDocument;
+begin
+  Doc := App.Docs.FindDocument(FilePath);
+  if Assigned(Doc) then
+  begin
+    LogBox.AppendLine(Format('Document already opened: %s', [FilePath]));
+    PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+  end else begin
+    Doc := App.Docs.OpenDoc(FilePath);
+    PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+    LogBox.AppendLine(Format('Document opened: %s', [FilePath]));
   end;
 end;
 
@@ -433,7 +561,25 @@ begin
 end;
 
 function TMainForm.CloseQuery: Boolean;
+var
+  i : Integer;
+  TabPage: TTabSheet;
+  EditorPage: TEditorForm;
 begin
+  for i := 0 to Pager.PageCount - 1 do
+  begin
+    TabPage := Pager.Pages[i];
+    if TabPage.Tag > 0 then
+    begin
+      EditorPage := TEditorForm(TabPage.Tag);
+      if not EditorPage.CanCloseContainer() then
+      begin
+        Result := False;
+        Exit;
+      end;
+    end;
+  end;
+
   Result := inherited CloseQuery;
 end;
 

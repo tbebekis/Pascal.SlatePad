@@ -17,9 +17,15 @@ type
     FAutoSaveSecondsInterval: Integer;
     fFontName: string;
     fFontSize: Integer;
+    fGutterVisible: Boolean;
     fLastFilter: string;
     fLastFolderPath: string;
-    fWordWrap: Boolean;
+    fMinimapTooltipVisible: Boolean;
+    fMinimapVisible: Boolean;
+    fRulerVisible: Boolean;
+    fShowCurLine: Boolean;
+    fUseHighlighters: Boolean;
+
     function GetFilePath: string;
   public
     constructor Create;
@@ -31,7 +37,15 @@ type
   published
     property AutoSave: Boolean read FAutoSave write FAutoSave;
     property AutoSaveSecondsInterval: Integer read FAutoSaveSecondsInterval write FAutoSaveSecondsInterval;
-    property WordWrap: Boolean read fWordWrap write fWordWrap;
+
+    property UseHighlighters: Boolean read fUseHighlighters write fUseHighlighters;
+
+    property GutterVisible: Boolean read fGutterVisible write fGutterVisible;
+    property RulerVisible: Boolean read fRulerVisible write fRulerVisible;
+    property ShowCurLine: Boolean read fShowCurLine write fShowCurLine;
+    property MinimapVisible: Boolean read fMinimapVisible write fMinimapVisible;
+    property MinimapTooltipVisible: Boolean read fMinimapTooltipVisible write fMinimapTooltipVisible;
+
     property FontName: string read fFontName write fFontName;
     property FontSize: Integer read fFontSize write fFontSize;
 
@@ -53,7 +67,7 @@ begin
 
   AutoSave := True;
   AutoSaveSecondsInterval := 5;
-  WordWrap := True;
+
 end;
 
 function TAppSettings.GetFilePath: string;

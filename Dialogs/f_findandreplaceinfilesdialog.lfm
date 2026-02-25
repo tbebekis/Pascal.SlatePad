@@ -4,7 +4,7 @@ object FindAndReplaceInFilesDialog: TFindAndReplaceInFilesDialog
   Top = 370
   Width = 776
   BorderStyle = bsDialog
-  Caption = 'FindAndReplaceInFilesDialog'
+  Caption = 'Find and Replace in Files'
   ClientHeight = 294
   ClientWidth = 776
   Position = poDesktopCenter

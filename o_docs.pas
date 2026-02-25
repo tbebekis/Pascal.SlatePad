@@ -10,6 +10,7 @@ uses
   , SysUtils
   , lazsysutils
   , Generics.Collections
+  , o_Filer
   ;
 
 type
@@ -21,6 +22,7 @@ type
     fCaretX: Integer;
     fCaretY: Integer;
     fFilePath: string;
+    fFileReadInfo: TFileReadInfo;
 
     fId: string;
     fLastSavedUtc: TDateTime;
@@ -47,6 +49,7 @@ type
     property IsLast: Boolean read GetIsLast;
 
     property IsBuffer: Boolean read GetIsBuffer;
+    property FileReadInfo: TFileReadInfo read fFileReadInfo write fFileReadInfo;
   published
     property Id: string read GetId write fId;
 
@@ -176,13 +179,17 @@ end;
 function TTextDocument.Load(): string;
 begin
   if FileExists(RealFilePath) then
-      Result := Sys.ReadUtf8TextFile(RealFilePath);
+  begin
+    //Result := Sys.ReadUtf8TextFile(RealFilePath);
+    Result := Filer.ReadTextFile(RealFilePath, fFileReadInfo);
+  end;
 end;
 
 procedure TTextDocument.Save(const Text: string);
 begin
-  Sys.WriteUtf8TextFile(RealFilePath, Text, False);
-    LastSavedUtc := NowUTC;
+  //Sys.WriteUtf8TextFile(RealFilePath, Text, False);
+  Filer.WriteTextFile(RealFilePath, Text, fFileReadInfo.Encoding);
+  LastSavedUtc := NowUTC;
 end;
 
 procedure TTextDocument.SaveAs(const Text: string; const AFilePath: string);

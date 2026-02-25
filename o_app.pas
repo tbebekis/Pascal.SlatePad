@@ -12,6 +12,7 @@ uses
   , Graphics
   , StdCtrls
   , System.UITypes
+  , o_PageHandler
   , o_AppSettings
   , o_Docs
   ;
@@ -22,6 +23,7 @@ type
 
   App = class
   private
+    class var fPageHandler: TPagerHandler;
     class var fDocs: TDocuments;
     class var fSettings: TAppSettings;
   public
@@ -42,11 +44,13 @@ type
     class procedure DisplayFileExplorer(const FileOrFolderPath: string);
     class function ShowFolderDialog(var FolderPath: string): Boolean;
 
-    class function GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
+    class function  GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
+    class procedure ClosePage(const PageId: string);
 
     // ● properties
     class property Settings: TAppSettings read fSettings;
     class property Docs: TDocuments read fDocs;
+    class property PageHandler : TPagerHandler read fPageHandler write fPageHandler;
   end;
 
 
@@ -196,6 +200,11 @@ begin
     App.ErrorBox(Format('Cannot convert this value to integer: %s', [Box.Text]))
   else
     Result := N;
+end;
+
+class procedure App.ClosePage(const PageId: string);
+begin
+  PageHandler.ClosePage(PageId);
 end;
 
 

@@ -1,76 +1,85 @@
 {
-  "ActivePageIndex" : 7,
+  "ActivePageIndex" : 6,
   "List" : [
     {
       "BufferIndex" : 0,
-      "CaretX" : 19,
-      "CaretY" : 3,
+      "CaretX" : 0,
+      "CaretY" : 9,
       "FilePath" : "/home/teo/Temp/Demo.txt",
       "Id" : "3FE30B0D-5C7A-4BEB-A04F-EA588E57253F",
-      "LastSavedUtc" : "2026-02-24T22:45:35",
+      "LastSavedUtc" : "2026-02-25T17:08:13",
       "TopLine" : 1
     },
     {
       "BufferIndex" : 1,
-      "CaretX" : 50,
-      "CaretY" : 4,
+      "CaretX" : 7,
+      "CaretY" : 3,
       "FilePath" : "",
       "Id" : "5728F8E6-519E-4782-9BF5-DE93C153E450",
-      "LastSavedUtc" : "2026-02-22T22:33:28",
+      "LastSavedUtc" : "2026-02-25T10:09:55",
       "TopLine" : 1
     },
     {
       "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 0,
-      "FilePath" : "/home/teo/Dev/Stories/The_Corpers/1. The Corp of the World/8. The Truth is Disturbing/4. The Monastery/Text.txt",
-      "Id" : "0370EE8E-7566-4539-BD35-A530D02A6BFD",
-      "LastSavedUtc" : "2026-02-24T00:23:33",
-      "TopLine" : 0
-    },
-    {
-      "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 0,
+      "CaretX" : 72,
+      "CaretY" : 21,
       "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/Resources/Files/wiki.js",
       "Id" : "81072927-43F3-424E-9BC9-FDC5D396E4E4",
-      "LastSavedUtc" : "2026-02-24T22:44:13",
+      "LastSavedUtc" : "2026-02-25T17:08:25",
       "TopLine" : 0
     },
     {
       "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 0,
+      "CaretX" : 193,
+      "CaretY" : 6,
       "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/Resources/Files/wiki.css",
       "Id" : "9777C448-8537-4241-8FEC-7FAE776D7596",
-      "LastSavedUtc" : "2026-02-24T22:44:14",
+      "LastSavedUtc" : "2026-02-25T17:08:25",
       "TopLine" : 0
     },
     {
       "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 0,
+      "CaretX" : 89,
+      "CaretY" : 18,
       "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/Resources/Files/wiki.html",
       "Id" : "A8F749E1-2B86-42BB-BE82-B79F0F083C6B",
-      "LastSavedUtc" : "2026-02-24T22:44:14",
+      "LastSavedUtc" : "2026-02-25T17:08:25",
       "TopLine" : 0
     },
     {
       "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 0,
+      "CaretX" : 23,
+      "CaretY" : 7,
       "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/f_mainform.lfm",
       "Id" : "CC256999-3E59-4DEA-9E8C-C44590CF14A5",
-      "LastSavedUtc" : "2026-02-24T22:44:30",
+      "LastSavedUtc" : "2026-02-25T17:08:25",
       "TopLine" : 0
     },
     {
       "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 0,
+      "CaretX" : 86,
+      "CaretY" : 4,
       "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/AppSettings.json",
       "Id" : "D9FD172E-1354-4D47-9766-0ADD1BAEEBFE",
-      "LastSavedUtc" : "2026-02-24T22:44:41",
+      "LastSavedUtc" : "2026-02-25T17:08:25",
+      "TopLine" : 0
+    },
+    {
+      "BufferIndex" : 0,
+      "CaretX" : 42,
+      "CaretY" : 26,
+      "FilePath" : "/home/teo/gdrive/N/Ceph/Temp.txt",
+      "Id" : "158804B4-ECD6-4546-83E5-9CE26FA6F933",
+      "LastSavedUtc" : "2026-02-25T17:08:25",
+      "TopLine" : 0
+    },
+    {
+      "BufferIndex" : 2,
+      "CaretX" : 5,
+      "CaretY" : 0,
+      "FilePath" : "",
+      "Id" : "F4BE2CA1-C6CD-4E33-B8FD-453734070967",
+      "LastSavedUtc" : "2026-02-25T17:00:39",
       "TopLine" : 0
     }
   ]

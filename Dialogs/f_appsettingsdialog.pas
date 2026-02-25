@@ -23,7 +23,12 @@ type
     btnCancel: TButton;
     btnOK: TButton;
     chAutoSave: TCheckBox;
-    chWordWrap: TCheckBox;
+    chUseHighlighters: TCheckBox;
+    chRulerVisible: TCheckBox;
+    chShowCurLine: TCheckBox;
+    chMinimapVisible: TCheckBox;
+    chMinimapTooltipVisible: TCheckBox;
+    chGutterVisible: TCheckBox;
     edtAutoSaveSecondsInterval: TEdit;
     Label1: TLabel;
     Label2: TLabel;
@@ -124,15 +129,29 @@ begin
   UpdateFontLabel();
 
   chAutoSave.Checked := Settings.AutoSave;
+
+  chUseHighlighters.Checked := Settings.UseHighlighters;
+  chGutterVisible.Checked := Settings.GutterVisible;
+  chRulerVisible.Checked := Settings.RulerVisible;
+  chShowCurLine.Checked := Settings.ShowCurLine;
+  chMinimapVisible.Checked := Settings.MinimapVisible;
+  chMinimapTooltipVisible.Checked := Settings.MinimapTooltipVisible;
+
   edtAutoSaveSecondsInterval.Text := IntToStr(Settings.AutoSaveSecondsInterval);
-  chWordWrap.Checked := Settings.WordWrap;
 end;
 
 procedure TAppSettingsDialog.ControlsToItem();
 begin
   Settings.AutoSave := chAutoSave.Checked;
+
+  Settings.UseHighlighters := chUseHighlighters.Checked;
+  Settings.GutterVisible := chGutterVisible.Checked;
+  Settings.RulerVisible := chRulerVisible.Checked;
+  Settings.ShowCurLine := chShowCurLine.Checked;
+  Settings.MinimapVisible := chMinimapVisible.Checked;
+  Settings.MinimapTooltipVisible := chMinimapTooltipVisible.Checked;
+
   Settings.AutoSaveSecondsInterval := App.GetEditBoxIntValue(edtAutoSaveSecondsInterval, Settings.AutoSaveSecondsInterval);
-  Settings.WordWrap := chWordWrap.Checked;
 
   App.Settings.Save();
   Self.ModalResult := mrOK;

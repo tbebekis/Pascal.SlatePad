@@ -19,7 +19,6 @@ uses
   , o_Docs
   , o_TextEditor
   , o_FindAndReplace
-
   ;
 
 
@@ -30,7 +29,12 @@ type
     StatusBar: TStatusBar;
     ToolBar: TToolBar;
   private
+    btnSave: TToolButton;
+    btnSaveAs: TToolButton;
+    btnFind: TToolButton;
     btnToggleWordWrap: TToolButton;
+    btnShowFolder: TToolButton;
+    btnClose: TToolButton;
 
     FAutoSaveTimer: TTimer;
     fDoc: TTextDocument;
@@ -45,34 +49,37 @@ type
     // ● event handler
     procedure AnyClick(Sender: TObject);
 
-    procedure EditorChange(Sender: TObject);
-    procedure EditorModifiedChanged(Sender: TObject);
-    procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure EditorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Editor_Change(Sender: TObject);
+    procedure Editor_ModifiedChanged(Sender: TObject);
+    procedure Editor_KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Editor_MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure Editor_CaretChangedPos(Sender: TObject);
+    procedure Editor_ChangeZoom(Sender: TObject);
+
+    procedure Form_MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 
     procedure AutoSaveTimerTick(Sender: TObject);
 
     procedure PrepareToolBar();
-    procedure UpdateStatusBar();
-    procedure UpdateDoc();
 
-    procedure ShowFindAndReplaceDialog();
+    procedure UpdateStatusBarLineColumn();
+    procedure UpdateDoc();
   protected
     procedure DoClose(var CloseAction: TCloseAction); override;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
     procedure ContainerInitialize; override;
-
     function CanCloseContainer(): Boolean; override;
-
-    procedure TitleChanged(); override;
     procedure AdjustTabTitle(); override;
 
     procedure SaveBuffer();
     procedure Save();
     procedure SaveAs();
+
+    procedure UpdateStatusBar();
 
     property Doc : TTextDocument read fDoc write fDoc;
     property TextEditor: TTextEditor read fTextEditor;
@@ -89,6 +96,7 @@ uses
   Math
   ,o_App
   ,o_Highlighters
+  ,o_Filer
   ;
 
 { TEditorForm }
@@ -101,6 +109,8 @@ begin
 
   fTextEditor := TTextEditor.Create(Self);
   TextEditor.Parent := Self;
+
+  Self.OnMouseWheel := Form_MouseWheel;
 end;
 
 destructor TEditorForm.Destroy();
@@ -126,9 +136,9 @@ begin
 
   TextEditor.EditorText := DocText;
   TextEditor.Modified := False;
-  TextEditor.WordWrap := App.Settings.WordWrap;
+  TextEditor.WordWrap := True;
 
-  TitleChanged();
+  TitleText := Doc.Title;
 
   FAutoSaveIdleMs := 1000 * 3;
   FAutoSaveDirty := False;
@@ -142,19 +152,20 @@ begin
   FAutoSaveTimer.Enabled := App.Settings.AutoSave;
 
   PrepareToolBar();
-  UpdateStatusBar();
 
-  TextEditor.CaretX := Max(0, Doc.CaretX);
-  TextEditor.CaretY := Max(1, Doc.CaretY);
-
-  TextEditor.OnKeyDown := EditorKeyDown;
-  TextEditor.OnMouseDown := EditorMouseDown;
-  TextEditor.OnChange := EditorChange;
-  TextEditor.OnModifiedChanged := EditorModifiedChanged;
+  TextEditor.OnKeyDown := Editor_KeyDown;
+  TextEditor.OnMouseDown := Editor_MouseDown;
+  TextEditor.OnChange := Editor_Change;
+  TextEditor.OnModifiedChanged := Editor_ModifiedChanged;
+  TextEditor.OnChangeCaretPos := Editor_CaretChangedPos;
+  TextEditor.OnChangeZoom := Editor_ChangeZoom;
 
   TextEditor.SetFocus();
 
-  if FileExists(Doc.FilePath) then
+  TextEditor.CaretY := Max(0, Doc.CaretY);
+  TextEditor.CaretX := Max(0, Doc.CaretX);
+
+  if App.Settings.UseHighlighters and FileExists(Doc.FilePath) then
   begin
     THighlighters.ApplyToEditor(TextEditor.Editor, Doc.FilePath);
     TextEditor.Editor.Invalidate;
@@ -162,6 +173,21 @@ begin
     IsHighlighterRegistered := True;
   end;
 
+  UpdateStatusBar();
+
+end;
+
+function TEditorForm.CanCloseContainer(): Boolean;
+begin
+  Result := True;
+
+  if (not Doc.IsBuffer) and TextEditor.Modified then
+  begin
+    if App.QuestionBox(Format('Discard changes to "%s" ?', [Doc.RealFilePath])) then
+      Result := True
+    else
+      Result := False;
+  end;
 end;
 
 procedure TEditorForm.DoClose(var CloseAction: TCloseAction);
@@ -169,24 +195,13 @@ begin
   if (not Doc.IsBuffer) then
   begin
     if TextEditor.Modified then
-      if App.QuestionBox('Save changes?') then
+      if App.QuestionBox(Format('Save changes to "%s" ??', [Doc.RealFilePath]))then
         Save();
     App.Docs.List.Remove(Doc);
     App.Docs.Save();
   end;
 
   inherited DoClose(CloseAction);
-end;
-
-function TEditorForm.CanCloseContainer(): Boolean;
-begin
-  Result := True;
-end;
-
-procedure TEditorForm.TitleChanged();
-begin
-  TitleText := Doc.Title;
-  AdjustTabTitle();
 end;
 
 procedure TEditorForm.AdjustTabTitle();
@@ -199,58 +214,15 @@ end;
 
 procedure TEditorForm.UpdateDoc();
 begin
-  //Doc.TopLine := TextEditor.TopLine;
   Doc.CaretX := TextEditor.CaretX;
   Doc.CaretY := TextEditor.CaretY;
-end;
-
-
-procedure TEditorForm.ShowFindAndReplaceDialog();
-var
-  Term: string;
-
-   Ok: Boolean;
-   Cnt: Integer;
-begin
-  (*
-  Term := TextEditor.GetWordAtCaret();
-  if Term = '' then
-    Exit;
-
-   FindAndReplaceOptions.TextToFind := Term;
-   if not TFindAndReplaceDialog.ShowDialog(FindAndReplaceOptions) then
-     Exit;
-
-   TextEditor.FindOptions.TextToFind    := UTF8Decode(FindAndReplaceOptions.TextToFind);
-   TextEditor.FindOptions.ReplaceWith   := UTF8Decode(FindAndReplaceOptions.ReplaceWith);
-   TextEditor.FindOptions.MatchCase     := FindAndReplaceOptions.MatchCase;
-   TextEditor.FindOptions.WholeWord     := FindAndReplaceOptions.WholeWord;
-   TextEditor.FindOptions.SelectionOnly := FindAndReplaceOptions.SelectionOnly;
-
-   if TextEditor.FindOptions.TextToFind = '' then
-     Exit;
-
-   if FindAndReplaceOptions.ReplaceAllFlag then
-   begin
-     Cnt := TextEditor.ReplaceAll();
-     Exit;
-   end;
-
-   if FindAndReplaceOptions.ReplaceFlag then
-   begin
-     Ok := TextEditor.ReplaceNext();
-     Exit;
-   end;
-
-   Ok := TextEditor.Find(False);
-   *)
 end;
 
 procedure TEditorForm.SaveBuffer();
 var
   DocText: string;
 begin
-  DocText := UTF8Encode(TextEditor.Text);      // edtFind.Text := UTF8Encode(WordU);  // WordU: UnicodeString
+  DocText := TextEditor.EditorText;
   Doc.Save(DocText);
 
   TextEditor.Modified := False;
@@ -293,6 +265,10 @@ begin
 
     Dlg.DefaultExt := 'txt';
     Dlg.Options := [ofOverwritePrompt, ofPathMustExist];
+    if not Doc.IsBuffer then
+    begin
+      Dlg.FileName := Doc.FilePath;
+    end;
 
     if Dlg.Execute() then
     begin
@@ -312,11 +288,22 @@ end;
 
 procedure TEditorForm.AnyClick(Sender: TObject);
 begin
-  if btnToggleWordWrap = Sender then
-    TextEditor.WordWrap := not TextEditor.WordWrap;
+  if btnSave = Sender then
+    Save()
+  else if btnSaveAs = Sender then
+    SaveAs()
+  else if btnFind = Sender then
+    TextEditor.ShowFindAndReplaceDialog()
+  else if btnShowFolder = Sender then
+    App.DisplayFileExplorer(Doc.RealFilePath)
+  else if btnToggleWordWrap = Sender then
+    TextEditor.WordWrap := not TextEditor.WordWrap
+  else if btnClose = Sender then
+    App.ClosePage(Id);
+
 end;
 
-procedure TEditorForm.EditorChange(Sender: TObject);
+procedure TEditorForm.Editor_Change(Sender: TObject);
 begin
   if not App.Settings.AutoSave then
     if not Doc.IsBuffer then
@@ -326,13 +313,19 @@ begin
   FLastEditTick := GetTickCount64;
 end;
 
-procedure TEditorForm.EditorModifiedChanged(Sender: TObject);
+procedure TEditorForm.Editor_ModifiedChanged(Sender: TObject);
 begin
   TitleChanged();
 end;
 
-procedure TEditorForm.EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TEditorForm.Editor_KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
+  if (Shift = [ssCtrl]) and (Key = VK_S) then
+  begin
+    Key := 0;
+    Save();
+  end
+
   (*
   if (Shift = [ssCtrl]) and (Key = VK_F) then
   begin
@@ -359,8 +352,29 @@ begin
   *)
 end;
 
-procedure TEditorForm.EditorMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TEditorForm.Editor_MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+end;
+
+procedure TEditorForm.Editor_CaretChangedPos(Sender: TObject);
+begin
+  UpdateStatusBarLineColumn();
+  UpdateDoc();
+end;
+
+procedure TEditorForm.Editor_ChangeZoom(Sender: TObject);
+begin
+  UpdateStatusBar();
+end;
+
+procedure TEditorForm.Form_MouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  if (ssCtrl in Shift) then
+  begin
+    TextEditor.Editor.OptScaleFont := TextEditor.Editor.OptScaleFont;
+    TextEditor.Editor.Update;
+    TextEditor.Editor.Invalidate;
+  end;
 end;
 
 procedure TEditorForm.AutoSaveTimerTick(Sender: TObject);
@@ -403,7 +417,12 @@ begin
   P := ToolBar.Parent;
   ToolBar.Parent := nil;
   try
+    btnSave  := AddButton(ToolBar, 'DISK', 'Save', AnyClick);
+    btnSaveAs := AddButton(ToolBar, 'DISK_MULTIPLE', 'Save As', AnyClick);
+    btnFind := AddButton(ToolBar, 'PAGE_FIND', 'Find', AnyClick);
     btnToggleWordWrap := AddButton(ToolBar, 'TEXT_DOCUMENT_WRAP', 'Word Wrap', AnyClick);
+    btnShowFolder := AddButton(ToolBar, 'FOLDER_GO', 'Show in folder', AnyClick);
+    btnClose := AddButton(ToolBar, 'DOOR_OUT', 'Close', AnyClick);
     //AddSeparator(ToolBar);
   finally
     ToolBar.Parent := P;
@@ -411,10 +430,34 @@ begin
 
 end;
 
-procedure TEditorForm.UpdateStatusBar();
+procedure TEditorForm.UpdateStatusBarLineColumn();
 begin
-  StatusBar.Panels[0].Text := Format('%d: %d', [TextEditor.CaretY, TextEditor.CaretX]);
+  StatusBar.Panels[0].Text := Format(' Ln: %d, Col: %d', [TextEditor.CaretY, TextEditor.CaretX]);
 end;
 
+procedure TEditorForm.UpdateStatusBar();
+  function GetZoom(): string;
+  var
+    V: Integer;
+  begin
+    V := 100;
+    if TextEditor.Editor.OptScaleFont <> 0 then
+      V := TextEditor.Editor.OptScaleFont;
+    Result := IntToStr(V) + '%';
+  end;
+
+begin
+  UpdateStatusBarLineColumn();
+  StatusBar.Panels[1].Text := Format('      %s', [Filer.EncodingToStr(Doc.FileReadInfo.Encoding)]);
+  StatusBar.Panels[2].Text := Format('      %s', [Filer.EolToStr(Doc.FileReadInfo.Eol)]);
+  StatusBar.Panels[3].Text := Format('      %s', [GetZoom()]);
+  StatusBar.Panels[4].Text := Format('      %s', [Doc.RealFilePath]);
+end;
+
+
+
 end.
+
+
+
 

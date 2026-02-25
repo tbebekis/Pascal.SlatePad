@@ -210,6 +210,15 @@ object MainForm: TMainForm
       object mnuSaveAs: TMenuItem
         Caption = 'Save As'
       end
+      object Separator3: TMenuItem
+        Caption = '-'
+      end
+      object mnuSaveAll: TMenuItem
+        Caption = 'Save All'
+      end
+      object mnuCloseAll: TMenuItem
+        Caption = 'Close All'
+      end
       object Separator1: TMenuItem
         Caption = '-'
       end
@@ -217,13 +226,13 @@ object MainForm: TMainForm
         Caption = 'Exit'
       end
     end
-    object mnuEdit: TMenuItem
-      Caption = 'Edit'
-    end
     object mnuView: TMenuItem
       Caption = 'View'
-      object mnuBottom: TMenuItem
-        Caption = 'Bottom'
+      object mnuFindInFiles: TMenuItem
+        Caption = 'Find in Files'
+      end
+      object mnuToggleBottom: TMenuItem
+        Caption = 'Toggle Bottom'
       end
       object Separator2: TMenuItem
         Caption = '-'

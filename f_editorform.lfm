@@ -18,13 +18,19 @@ inherited EditorForm: TEditorForm
     Width = 641
     Panels = <    
       item
-        Width = 50
+        Width = 140
       end    
       item
-        Width = 50
+        Width = 120
       end    
       item
-        Width = 50
+        Width = 120
+      end    
+      item
+        Width = 100
+      end    
+      item
+        Width = 1024
       end>
     SimplePanel = False
   end

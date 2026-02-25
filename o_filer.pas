@@ -30,7 +30,7 @@ type
     feCP1251,      // Cyrillic
     feKOI8R,       // Cyrillic
     feCP437,       // DOS US
-    feCP850,        // DOS Western
+    feCP850,       // DOS Western
 
     // everything else legacy/single-byte will land here
     feSingleByte_Detected
@@ -60,7 +60,6 @@ type
 
     class function ScoreDecodedText(const S: string; const Orig: AnsiString; const EncName: string): Integer; static;
     class function DetectSingleByteEncoding(const Raw: AnsiString; out BestName: string; out BestEnc: TFileEncoding): Boolean; static;
-
   public
     class function EolToStr(E: TEolKind): string; static;
     class function EncodingToStr(E: TFileEncoding): string; static;
@@ -103,6 +102,9 @@ begin
     feKOI8R:       Result := 'KOI8-R';
     feCP437:       Result := 'CP437';
     feCP850:       Result := 'CP850';
+
+    feANSI_Unknown:        Result := 'ANSI';
+    feSingleByte_Detected: Result := 'SINGLE-BYTE';
   else
     Result := '?';
   end;
@@ -155,8 +157,8 @@ begin
   if (T='cp437') then Exit(feCP437);
   if (T='cp850') then Exit(feCP850);
 
-  //Result := feUnknown;
-  Result := feSingleByte_Detected;  // οτιδήποτε άλλο single-byte το κρατάμε ως “detected”
+  // οτιδήποτε άλλο single-byte το κρατάμε ως “detected”
+  Result := feSingleByte_Detected;
 end;
 
 class function Filer.BytesToAnsiString(const B: TBytes; AStart, ACount: Integer): AnsiString;
@@ -385,8 +387,7 @@ begin
   if BestName <> '' then
   begin
     BestEnc := NameToEnc(BestName);
-    if BestEnc = feUnknown then
-      BestEnc := feANSI_Unknown;
+    // Note: unknown single-byte names map to feSingleByte_Detected (desired)
     Result := True;
   end;
 end;
@@ -508,9 +509,14 @@ var
   I: Integer;
   BOM: array[0..2] of Byte;
   EncName: string;
+  Dir: string;
 begin
   B := [];
-  ForceDirectories(ExtractFileDir(FileName));
+
+  // FIX #1: ForceDirectories only if directory part exists
+  Dir := ExtractFileDir(FileName);
+  if Dir <> '' then
+    ForceDirectories(Dir);
 
   FS := TFileStream.Create(FileName, fmCreate);
   try
@@ -519,7 +525,9 @@ begin
         begin
           // no BOM
           S := Text;
-          FS.WriteBuffer(S[1], Length(S));
+          // FIX #2: guard empty string
+          if Length(S) > 0 then
+            FS.WriteBuffer(S[1], Length(S));
         end;
 
       feUTF8_BOM:

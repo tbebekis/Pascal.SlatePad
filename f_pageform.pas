@@ -25,11 +25,12 @@ type
     fId: string;
     fInfo: TObject;
     fIsInitialized: Boolean;
-
   protected
-    TitleText: string;
     fBroadcasterToken: TBroadcastToken;
+    fTitleText: string;
+
     function GetParentTabPage: TTabSheet; virtual;
+    procedure SetTitleText(AValue: string); virtual;
 
     procedure DoShow; override;
     procedure DoClose(var CloseAction: TCloseAction); override;
@@ -56,6 +57,7 @@ type
     property CloseableByUser: Boolean read fCloseableByUser write fCloseableByUser;
     property Info: TObject read fInfo write fInfo;
 
+    property TitleText: string read fTitleText write SetTitleText;
     property ParentTabPage: TTabSheet read GetParentTabPage;
     property IsInitialized: Boolean read fIsInitialized;
   end;
@@ -95,6 +97,15 @@ end;
 
 procedure TPageForm.ContainerInitialize();
 begin
+end;
+
+procedure TPageForm.SetTitleText(AValue: string);
+begin
+  if fTitleText <> AValue then
+  begin
+    fTitleText := AValue;
+    TitleChanged();
+  end;
 end;
 
 function TPageForm.GetParentTabPage: TTabSheet;

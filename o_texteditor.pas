@@ -91,9 +91,13 @@ type
 
     function GetEditorText: string;
     function GetOnCaretChanged: TNotifyEvent;
+    function GetOnChangeCaretPos: TNotifyEvent;
+    function GetOnChangeZoom: TNotifyEvent;
     function GetOnModifiedChanged: TNotifyEvent;
-    procedure SetEditorText(AValue: string);
+    procedure SetEditorText(const AValue: string);
     procedure SetOnCaretChanged(AValue: TNotifyEvent);
+    procedure SetOnChangeCaretPos(AValue: TNotifyEvent);
+    procedure SetOnChangeZoom(AValue: TNotifyEvent);
     procedure SetOnModifiedChanged(AValue: TNotifyEvent);
 
     procedure Editor_OnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -108,10 +112,13 @@ type
     destructor Destroy(); override;
 
     procedure SetFocus();
+    procedure SetCaretPos(AX, AY: Integer);
 
     class function IsWordChar(const Ch: WideChar): Boolean;
     function GetWordAtCaret(out Word: TEdText; out WordStartXChar0, WordLenChars: Integer): Boolean; overload;
     function GetWordAtCaret(): TEdText;
+
+    procedure ShowFindAndReplaceDialog();
 
     function FindNext(Backward: Boolean): Integer;
     function FindAndHighlightAll(): Integer;
@@ -154,6 +161,8 @@ type
     property OnMouseDown: TMouseEvent read GetOnMouseDown write SetOnMouseDown;
     property OnModifiedChanged: TNotifyEvent read GetOnModifiedChanged write SetOnModifiedChanged;
     property OnCaretChanged: TNotifyEvent read GetOnCaretChanged  write SetOnCaretChanged;
+    property OnChangeCaretPos: TNotifyEvent read GetOnChangeCaretPos write SetOnChangeCaretPos;
+    property OnChangeZoom: TNotifyEvent read GetOnChangeZoom write SetOnChangeZoom;
   end;
 
 (*
@@ -169,8 +178,6 @@ uses
   ,ATSynEdit_Carets
   ,o_App
   ;
-
-
 
 
 
@@ -491,19 +498,18 @@ begin
   inherited Create(AOwner);
   fEditor := TATSynEdit.Create(Self);
   fEditor.OptUnprintedVisible := False;   // hide non-printable characters
-  fEditor.OptRulerVisible:= False;
+  fEditor.OptRulerVisible:= App.Settings.RulerVisible;
   fEditor.OptMarginRight := 100000;
-  fEditor.OptShowCurLine := False;
-  fEditor.OptGutterVisible := False;
+  fEditor.OptShowCurLine := App.Settings.ShowCurLine;
+  fEditor.OptGutterVisible := App.Settings.GutterVisible;
   fEditor.OptBorderVisible := True;
-  fEditor.OptMinimapVisible := False;
-  fEditor.OptMinimapTooltipVisible := False;
+  fEditor.OptMinimapVisible := App.Settings.MinimapVisible;
+  fEditor.OptMinimapTooltipVisible := App.Settings.MinimapTooltipVisible;
+  fEditor.OptMinimapCharWidth := 60; // controls minimap width
 
   AppSettingsChanged();
 
   fEditor.OnKeyDown := Editor_OnKeyDown;
-
-
 
   fFindAndReplace := TFindAndReplace.Create(Self);
   fFindAndReplace.Handler := Self;
@@ -517,14 +523,37 @@ end;
 
 procedure TTextEditor.AppSettingsChanged();
 begin
+  fEditor.OptRulerVisible:= App.Settings.RulerVisible;
+  fEditor.OptShowCurLine := App.Settings.ShowCurLine;
+  fEditor.OptGutterVisible := App.Settings.GutterVisible;
+  fEditor.OptMinimapVisible := App.Settings.MinimapVisible;
+  fEditor.OptMinimapTooltipVisible := App.Settings.MinimapTooltipVisible;
+
   fEditor.Font.Name := App.Settings.FontName;
   fEditor.Font.Size := App.Settings.FontSize;
+
+  fEditor.Update();
 end;
 
 procedure TTextEditor.SetFocus();
 begin
   if fEditor.CanFocus then
     fEditor.SetFocus;
+end;
+
+procedure TTextEditor.SetCaretPos(AX, AY: Integer);
+begin
+  fEditor.Carets[0].PosX := AX;
+  fEditor.Carets[0].PosY := AY;
+
+  // the important part:
+  fEditor.DoGotoCaret(TATCaretEdge.Top);  // caret index 0, ensure visible (scroll)
+  // or in some versions:
+  // fEditor.DoScrollToCaret;
+  // fEditor.DoMakeCaretVisible;
+  // fEditor.DoEnsureCaretVisible;
+
+  fEditor.Update;
 end;
 
 function TTextEditor.GetParent: TWinControl;
@@ -596,8 +625,6 @@ begin
   fEditor.OptRulerVisible := AValue;
 end;
 
-
-
 function TTextEditor.GetShowCurLine: Boolean;
 begin
   Result := fEditor.OptShowCurLine
@@ -634,6 +661,26 @@ end;
 procedure TTextEditor.SetOnCaretChanged(AValue: TNotifyEvent);
 begin
   fEditor.Carets.OnCaretChanged := AValue;
+end;
+
+function TTextEditor.GetOnChangeCaretPos: TNotifyEvent;
+begin
+  Result := fEditor.OnChangeCaretPos;
+end;
+
+procedure TTextEditor.SetOnChangeCaretPos(AValue: TNotifyEvent);
+begin
+  fEditor.OnChangeCaretPos := AValue;
+end;
+
+function TTextEditor.GetOnChangeZoom: TNotifyEvent;
+begin
+  Result := fEditor.OnChangeZoom;
+end;
+
+procedure TTextEditor.SetOnChangeZoom(AValue: TNotifyEvent);
+begin
+  fEditor.OnChangeZoom := AValue;
 end;
 
 procedure TTextEditor.SetOnModifiedChanged(AValue: TNotifyEvent);
@@ -691,6 +738,7 @@ begin
   fEditor.Text := AValue;
 end;
 
+(*
 function TTextEditor.GetEditorText: string;
 begin
   Result := UTF8Encode(fEditor.Text);
@@ -699,6 +747,17 @@ end;
 procedure TTextEditor.SetEditorText(AValue: string);
 begin
   fEditor.Text := UTF8Decode(AValue);
+end;
+*)
+
+function TTextEditor.GetEditorText: string;
+begin
+  Result := UTF16ToUTF8(fEditor.Text);
+end;
+
+procedure TTextEditor.SetEditorText(const AValue: string);
+begin
+  fEditor.Text := UTF8ToUTF16(AValue);
 end;
 
 function TTextEditor.GetModified: Boolean;
@@ -850,20 +909,23 @@ begin
     Result := '';
 end;
 
+procedure TTextEditor.ShowFindAndReplaceDialog();
+var
+  Term: UnicodeString;
+begin
+  Term := GetWordAtCaret();
+  FindAndReplace.ShowDialog(Term);
+end;
+
 procedure TTextEditor.Editor_OnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   Term: UnicodeString;
 begin
   if (Shift = [ssCtrl]) and (Key = VK_F) then
   begin
+    ShowFindAndReplaceDialog();
     Key := 0;
-    Term := GetWordAtCaret();
-    FindAndReplace.ShowDialog(Term);
     Exit;
-  end else if (Shift = [ssCtrl]) and (Key = VK_S) then
-  begin
-    //Key := 0;
-    //Save();
   end else if Key = VK_ESCAPE then
   begin
     ClearHighlights();
@@ -874,6 +936,7 @@ begin
        FindNext(True)
     else
        FindNext(False);
+    Key := 0;
     Exit;
   end;
 
@@ -1207,7 +1270,6 @@ begin
   SelectRangeXY(fEditor, X, Y, -1, -1, False); // keep caret, no selection
   fEditor.Update;
 end;
-
 
 procedure TTextEditor.HighlightAll();
 var

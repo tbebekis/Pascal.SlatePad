@@ -132,8 +132,8 @@ type
 implementation
 
 uses
-  f_FindAndReplaceInFilesDialog
-  ,o_App
+  o_App
+  ,f_FindAndReplaceInFilesDialog
   ;
 
 type
@@ -517,94 +517,6 @@ begin
 
   Result := fFindResult.FileMatchList.Count;
  end;
-(*
-procedure TFindAndReplaceInFiles.FindAll();
-var
-  Opt: TFindAndReplaceInFilesOptions;
-  Exts: TStringList;
-  SR: TSearchRec;
-  Folder, FilePath: string;
-
-  FileTextU, EOL: UnicodeString;
-  ULines: TUnicodeLineList;
-
-  NeedleN: UnicodeString;
-  TermLen: Integer;
-
-  y, Start1, P: Integer;
-  LineU, HayN: UnicodeString;
-
-  FM: TFileMatch;
-begin
-  Opt := Options;
-  if Opt.TermU = '' then Exit;
-
-  Folder := Trim(Opt.FolderPath);
-  if (Folder = '') or (not DirectoryExists(Folder)) then Exit;
-
-  Exts := BuildExtList(Opt.Filters);
-  try
-    fFindResult.FileMatchList.Clear;
-
-    NeedleN := NormU(Opt.TermU, Opt.MatchCase);
-    TermLen := Opt.TermLenChars;
-
-    ULines := TUnicodeLineList.Create;
-    try
-      if FindFirst(IncludeTrailingPathDelimiter(Folder) + '*', faAnyFile, SR) = 0 then
-      try
-        repeat
-          if (SR.Name = '.') or (SR.Name = '..') then Continue;
-          if (SR.Attr and faDirectory) <> 0 then Continue;
-          if not ExtAllowed(SR.Name, Exts) then Continue;
-
-          FilePath := IncludeTrailingPathDelimiter(Folder) + SR.Name;
-
-          if not ReadFileUtf8(FilePath, FileTextU, EOL) then Continue;
-          SplitLines_KeepText(FileTextU, ULines);
-
-          FM := nil;
-
-          for y := 0 to ULines.Count - 1 do
-          begin
-            LineU := ULines[y];
-            HayN := NormU(LineU, Opt.MatchCase);
-
-            Start1 := 1;
-            while True do
-            begin
-              P := PosEx(NeedleN, HayN, Start1);
-              if P <= 0 then Break;
-
-              if Opt.WholeWord and (not IsWholeWordAt(LineU, P, TermLen)) then
-              begin
-                Start1 := P + 1;
-                Continue;
-              end;
-
-              if FM = nil then
-              begin
-                FM := TFileMatch.Create(fFindResult, FilePath);
-                fFindResult.FileMatchList.Add(FM);
-              end;
-
-              FM.TermMatchList.Add(TTermMatch.Create(FM, y, P-1, UTF8Encode(LineU)));
-              Start1 := P + 1;
-            end;
-          end;
-
-        until FindNext(SR) <> 0;
-      finally
-        FindClose(SR);
-      end;
-    finally
-      ULines.Free;
-    end;
-  finally
-    Exts.Free;
-  end;
-end;
-*)
 
 procedure TFindAndReplaceInFiles.FindAll();
 var
@@ -681,7 +593,7 @@ var
               fFindResult.FileMatchList.Add(FM);
             end;
 
-            FM.TermMatchList.Add(TTermMatch.Create(FM, y, P-1, UTF8Encode(LineU)));
+            FM.TermMatchList.Add(TTermMatch.Create(FM, iy, P-1, UTF8Encode(LineU)));
             Start1 := P + 1;
           end;
         end;
@@ -809,8 +721,7 @@ begin
     tv.Items.Clear;
 
     // Root
-    S := Format('Search "%s" in %s',
-      [Options.Term, Options.FolderPath]);
+    S := Format('Search "%s" in %s',  [Options.Term, Options.FolderPath]);
 
     RootNode := tv.Items.Add(nil, S);
 
@@ -830,8 +741,7 @@ begin
         TM := FM.TermMatchList[j];
         if TM = nil then Continue;
 
-        S := Format('%d: %s',
-          [TM.Line + 1, TM.LineText]);
+        S := Format('%d,%d: %s', [TM.Line, TM.Column, TM.LineText]);
 
         MatchNode := tv.Items.AddChild(FileNode, S);
         MatchNode.Data := TM;

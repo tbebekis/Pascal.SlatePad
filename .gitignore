@@ -2,4 +2,8 @@
 **/backup
 **/ScreenShots
 *.editorconfig
+**/bin
+**/Highlighters
+**/Buffer
+Highlighters.zip
 SlatePad
