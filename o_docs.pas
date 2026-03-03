@@ -9,11 +9,13 @@ uses
   , SyncObjs
   , SysUtils
   , lazsysutils
+  , DateUtils
   , Generics.Collections
   , o_Filer
   ;
 
 type
+  TDocAction = (daClose, daSaveAs, daKeep, daReload);
 
   { TTextDocument }
   TTextDocument = class(TCollectionItem)
@@ -27,6 +29,11 @@ type
     fId: string;
     fLastSavedUtc: TDateTime;
     fTopLine: Integer;
+
+    fDiskExists: Boolean;
+    fDiskMTimeUtc: TDateTime;
+    fDiskSize: Int64;
+
     function GetBufferFilePath: string;
     function GetIsBuffer: Boolean;
     function GetIsFirst: Boolean;
@@ -40,6 +47,9 @@ type
     procedure Save(const Text: string);
     procedure SaveAs(const Text: string; const AFilePath: string);
 
+    procedure UpdateDiskState();
+    function DiskSignatureChanged(out NewExists: Boolean; out NewMTimeUtc: TDateTime; out NewSize: Int64): Boolean;
+
     property Title: string read GetTitle;
 
     property BufferFilePath: string read GetBufferFilePath;
@@ -50,6 +60,10 @@ type
 
     property IsBuffer: Boolean read GetIsBuffer;
     property FileReadInfo: TFileReadInfo read fFileReadInfo write fFileReadInfo;
+
+    property DiskExists: Boolean read fDiskExists;
+    property DiskMTimeUtc: TDateTime read fDiskMTimeUtc;
+    property DiskSize: Int64 read fDiskSize;
   published
     property Id: string read GetId write fId;
 
@@ -204,6 +218,74 @@ begin
   Save(Text);
 end;
 
+procedure TTextDocument.UpdateDiskState();
+var
+  Info: TSearchRec;
+  Exists: Boolean;
+  MTimeLocal: TDateTime;
+begin
+  Exists := FileExists(RealFilePath);
+  fDiskExists := Exists;
+
+  if Exists then
+  begin
+    // size + mtime (local datetime)
+    if FindFirst(RealFilePath, faAnyFile, Info) = 0 then
+    try
+      fDiskSize := Info.Size;
+      MTimeLocal := FileDateToDateTime(Info.Time);
+      // κάνε το UTC signature για να συγκρίνεις σταθερά
+      fDiskMTimeUtc := LocalTimeToUniversal(MTimeLocal);
+    finally
+      FindClose(Info);
+    end
+    else
+    begin
+      fDiskSize := 0;
+      fDiskMTimeUtc := 0;
+    end;
+  end
+  else
+  begin
+    fDiskSize := 0;
+    fDiskMTimeUtc := 0;
+  end;
+end;
+
+function TTextDocument.DiskSignatureChanged(out NewExists: Boolean; out NewMTimeUtc: TDateTime; out NewSize: Int64): Boolean;
+var
+  Info: TSearchRec;
+  MTimeLocal: TDateTime;
+begin
+  NewExists := FileExists(RealFilePath);
+
+  if NewExists then
+  begin
+    if FindFirst(RealFilePath, faAnyFile, Info) = 0 then
+    try
+      NewSize := Info.Size;
+      MTimeLocal := FileDateToDateTime(Info.Time);
+      NewMTimeUtc := LocalTimeToUniversal(MTimeLocal);
+    finally
+      FindClose(Info);
+    end
+    else
+    begin
+      NewSize := 0;
+      NewMTimeUtc := 0;
+    end;
+  end
+  else
+  begin
+    NewSize := 0;
+    NewMTimeUtc := 0;
+  end;
+
+  Result :=
+    (NewExists <> fDiskExists) or
+    (Abs(NewMTimeUtc - fDiskMTimeUtc) > (1.0 / (24*60*60))) or // >1 sec
+    (NewSize <> fDiskSize);
+end;
 
 
 { TDocumentList }

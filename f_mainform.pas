@@ -21,6 +21,7 @@ uses
   , o_PageHandler
   , o_Docs
   , o_FindAndReplaceInFiles
+  , o_DocMonitor
   , f_TextEditorForm
   ;
 
@@ -56,6 +57,7 @@ type
   private
     PageHandler : TPagerHandler;
     FindAndReplaceInFiles: TFindAndReplaceInFiles;
+    DocMonitor : TDocMonitor;
 
     procedure FormInitialize();
     procedure FormFinalize();
@@ -70,18 +72,21 @@ type
     procedure PageHandlerOnPagesArranged(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tvFindResults_DoubleClick(Sender: TObject);
+    procedure HandleDocDiskChange(Sender: TObject; Doc: TTextDocument; Kind: TDocDiskChangeKind);
 
     procedure NewDoc();
     procedure OpenDoc(); overload;
     procedure OpenDoc(const FilePath: string); overload;
 
-    function GetActiveEditorPage(): TTextEditorForm;
+    function  GetActiveEditorPage(): TTextEditorForm;
     procedure SetBottomPagerVisible(AValue: Boolean);
 
     procedure AppSettingsChanged();
 
     procedure SaveAll();
     procedure InitializeHighlighters();
+
+    function GetTextEditorForm(Doc: TTextDocument): TTextEditorForm;
   protected
     procedure DoCreate; override;
     procedure DoDestroy; override;
@@ -109,6 +114,7 @@ uses
   ,o_App
 
   ,f_AppSettingsDialog
+  ,f_DocActionDialog
   ,o_Highlighters
   ,Zipper
 
@@ -195,6 +201,9 @@ begin
     THighlighters.RegisterDefaults;
   end;
 end;
+
+
+
 procedure TMainForm.DoCreate;
 begin
   inherited DoCreate;
@@ -291,6 +300,10 @@ begin
   tvFindResults.OnDblClick := tvFindResults_DoubleClick;
 
   LoadDocuments();
+
+  DocMonitor := TDocMonitor.Create(Self, App.Docs);
+  DocMonitor.OnDiskChange := HandleDocDiskChange;
+  DocMonitor.Start(2000);
 end;
 
 procedure TMainForm.FormFinalize();
@@ -600,6 +613,79 @@ begin
     FindAndReplaceInFiles.LoadTo(tvFindResults);
     BottomPager.ActivePage := tabFindResults;
   end;
+end;
+
+function TMainForm.GetTextEditorForm(Doc: TTextDocument): TTextEditorForm;
+var
+  i : Integer;
+  TabPage: TTabSheet;
+  TextEditorForm: TTextEditorForm;
+begin
+  Result := nil;
+
+  for i := 0 to Pager.PageCount - 1 do
+  begin
+    TabPage := Pager.Pages[i];
+    if TabPage.Tag > 0 then
+    begin
+      TextEditorForm := TTextEditorForm(TabPage.Tag);
+      if TextEditorForm.Doc = Doc then
+      begin
+        Result := TextEditorForm;
+        break;
+      end;
+    end;
+  end;
+end;
+
+procedure TMainForm.HandleDocDiskChange(Sender: TObject; Doc: TTextDocument; Kind: TDocDiskChangeKind);
+var
+  TextEditorForm: TTextEditorForm;
+  Action: TDocAction;
+begin
+  DocMonitor.Stop();
+  try
+    TextEditorForm := GetTextEditorForm(Doc);
+    if not Assigned(TextEditorForm) then
+       Exit;
+
+    Action := daClose;
+
+    case Kind of
+      ddcDeleted:
+        begin
+          Pager.ActivePage := TextEditorForm.ParentTabPage;
+          if not TDocActionDialog.ShowDialog(True, Doc.FilePath, Action) then
+            Exit;
+        end;
+
+      ddcModified:
+        begin
+          Pager.ActivePage := TextEditorForm.ParentTabPage;
+          if not TDocActionDialog.ShowDialog(False, Doc.FilePath, Action) then
+            Exit;
+        end;
+
+      ddcCreated:
+        begin
+          // σπάνιο για ανοιχτό doc, αλλά μπορεί να το ξαναδημιούργησαν
+          // συμπεριφέρσου σαν modified (πρόσφερε reload)
+          Exit;
+        end;
+    end;
+
+
+    case Action of
+      daClose  : PageHandler.ClosePage(TextEditorForm.Id);
+      daSaveAs : TextEditorForm.SaveAs();
+      daKeep   : ;
+      daReload : TextEditorForm.ReLoadDoc();
+    end;
+  finally
+    DocMonitor.Start();
+  end;
+
+
 end;
 
 end.

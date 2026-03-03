@@ -3,6 +3,7 @@
 **/ScreenShots
 *.editorconfig
 **/bin
+**/Bin
 **/Highlighters
 **/Buffer
 Highlighters.zip

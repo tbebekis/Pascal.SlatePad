@@ -62,7 +62,6 @@ type
     procedure UpdateDoc();
   protected
     procedure DoClose(var CloseAction: TCloseAction); override;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
@@ -74,6 +73,7 @@ type
     procedure SaveBuffer();
     procedure Save();
     procedure SaveAs();
+    procedure ReLoadDoc();
 
     procedure UpdateStatusBar();
 
@@ -271,6 +271,16 @@ begin
     Dlg.Free;
   end;
 
+end;
+
+procedure TTextEditorForm.ReLoadDoc();
+var
+  DocText: string;
+begin
+  DocText := Doc.Load();
+
+  TextEditor.EditorText := DocText;
+  TextEditor.Modified := False;
 end;
 
 procedure TTextEditorForm.AnyClick(Sender: TObject);

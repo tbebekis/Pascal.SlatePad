@@ -1,0 +1,55 @@
+object DocActionDialog: TDocActionDialog
+  Left = 409
+  Height = 228
+  Top = 370
+  Width = 385
+  BorderStyle = bsDialog
+  Caption = 'Document Action'
+  ClientHeight = 228
+  ClientWidth = 385
+  Position = poDesktopCenter
+  LCLVersion = '4.4.0.0'
+  object btnOK: TButton
+    Left = 222
+    Height = 25
+    Top = 195
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    TabOrder = 0
+  end
+  object btnCancel: TButton
+    Left = 298
+    Height = 25
+    Top = 195
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object lblMessage: TLabel
+    Left = 8
+    Height = 16
+    Top = 8
+    Width = 69
+    Caption = 'lblMessage'
+  end
+  object gboOptions: TRadioGroup
+    Left = 8
+    Height = 121
+    Top = 64
+    Width = 363
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    Caption = 'Actions'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 2
+  end
+end
