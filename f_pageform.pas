@@ -124,7 +124,6 @@ begin
     ContainerInitialize();
     fIsInitialized := True;
   end;
-
 end;
 
 procedure TPageForm.DoClose(var CloseAction: TCloseAction);

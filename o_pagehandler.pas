@@ -17,9 +17,6 @@ uses
   ;
 
 type
-  //TPageFormClass = class of TPageForm;
-
-
   { TPagerHandler }
   TPagerHandler = class
   private

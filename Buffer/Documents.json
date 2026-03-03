@@ -1,22 +1,22 @@
 {
-  "ActivePageIndex" : 6,
+  "ActivePageIndex" : 1,
   "List" : [
     {
       "BufferIndex" : 0,
-      "CaretX" : 0,
-      "CaretY" : 9,
+      "CaretX" : 98,
+      "CaretY" : 3,
       "FilePath" : "/home/teo/Temp/Demo.txt",
       "Id" : "3FE30B0D-5C7A-4BEB-A04F-EA588E57253F",
-      "LastSavedUtc" : "2026-02-25T17:08:13",
+      "LastSavedUtc" : "2026-03-03T10:11:24",
       "TopLine" : 1
     },
     {
-      "BufferIndex" : 1,
-      "CaretX" : 7,
-      "CaretY" : 3,
-      "FilePath" : "",
+      "BufferIndex" : 0,
+      "CaretX" : 0,
+      "CaretY" : 5,
+      "FilePath" : "/home/teo/Temp/Test2.txt",
       "Id" : "5728F8E6-519E-4782-9BF5-DE93C153E450",
-      "LastSavedUtc" : "2026-02-25T10:09:55",
+      "LastSavedUtc" : "2026-03-03T10:15:56",
       "TopLine" : 1
     },
     {
@@ -52,15 +52,6 @@
       "CaretY" : 7,
       "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/f_mainform.lfm",
       "Id" : "CC256999-3E59-4DEA-9E8C-C44590CF14A5",
-      "LastSavedUtc" : "2026-02-25T17:08:25",
-      "TopLine" : 0
-    },
-    {
-      "BufferIndex" : 0,
-      "CaretX" : 86,
-      "CaretY" : 4,
-      "FilePath" : "/home/teo/Dev/Lazarus/Pascal.StoryWriter/AppSettings.json",
-      "Id" : "D9FD172E-1354-4D47-9766-0ADD1BAEEBFE",
       "LastSavedUtc" : "2026-02-25T17:08:25",
       "TopLine" : 0
     },

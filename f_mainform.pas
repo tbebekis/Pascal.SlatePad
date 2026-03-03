@@ -21,7 +21,7 @@ uses
   , o_PageHandler
   , o_Docs
   , o_FindAndReplaceInFiles
-  , f_EditorForm
+  , f_TextEditorForm
   ;
 
 type
@@ -75,7 +75,7 @@ type
     procedure OpenDoc(); overload;
     procedure OpenDoc(const FilePath: string); overload;
 
-    function GetActiveEditorPage(): TEditorForm;
+    function GetActiveEditorPage(): TTextEditorForm;
     procedure SetBottomPagerVisible(AValue: Boolean);
 
     procedure AppSettingsChanged();
@@ -259,7 +259,7 @@ procedure TMainForm.AppSettingsChanged();
 var
   i : Integer;
   TabPage: TTabSheet;
-  EditorPage: TEditorForm;
+  EditorPage: TTextEditorForm;
 begin
 
   for i := 0 to Pager.PageCount - 1 do
@@ -267,7 +267,7 @@ begin
     TabPage := Pager.Pages[i];
     if TabPage.Tag > 0 then
     begin
-      EditorPage := TEditorForm(TabPage.Tag);
+      EditorPage := TTextEditorForm(TabPage.Tag);
       EditorPage.TextEditor.AppSettingsChanged();
     end;
   end;
@@ -307,7 +307,7 @@ begin
   for Item in App.Docs.List do
   begin
     Doc := TTextDocument(Item);
-    PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+    PageHandler.ShowPage(TTextEditorForm, Doc.Id, Doc);
   end;
 
   if (Pager.PageCount > 0) and (App.Docs.ActivePageIndex <> -1) and (App.Docs.ActivePageIndex <= Pager.PageCount -1) then
@@ -316,7 +316,7 @@ end;
 
 procedure TMainForm.AnyClick(Sender: TObject);
 var
-  EditorPage: TEditorForm;
+  EditorPage: TTextEditorForm;
 begin
   if mnuNew = Sender then
     NewDoc()
@@ -357,7 +357,7 @@ procedure TMainForm.SaveAll();
 var
   i : Integer;
   TabPage: TTabSheet;
-  EditorPage: TEditorForm;
+  EditorPage: TTextEditorForm;
 begin
   LogBox.AppendLine('Saving all documents');
   for i := 0 to Pager.PageCount - 1 do
@@ -365,7 +365,7 @@ begin
     TabPage := Pager.Pages[i];
     if TabPage.Tag > 0 then
     begin
-      EditorPage := TEditorForm(TabPage.Tag);
+      EditorPage := TTextEditorForm(TabPage.Tag);
 
       if EditorPage.Doc.IsBuffer or EditorPage.TextEditor.Modified then
         if App.QuestionBox(Format('Save changes in "%s"?', [EditorPage.Doc.Title])) then
@@ -376,7 +376,7 @@ end;
 
 procedure TMainForm.PagerOnChange(Sender: TObject);
 var
-  EditorForm: TEditorForm;
+  EditorForm: TTextEditorForm;
 begin
   if Pager.PageCount > 0 then
     App.Docs.ActivePageIndex := Pager.ActivePageIndex
@@ -387,7 +387,7 @@ begin
   if Assigned(EditorForm) then
   begin
     EditorForm.SetFocus();
-    EditorForm.SetFocusedControl(EditorForm.TextEditor.Editor);
+    EditorForm.SetFocusedControl(EditorForm.TextEditor);
   end;
 end;
 
@@ -396,7 +396,7 @@ var
   SourceList: TObjectList<TTextDocument>;
   i : Integer;
   TabPage: TTabSheet;
-  EditorPage: TEditorForm;
+  EditorPage: TTextEditorForm;
 begin
   SourceList := TObjectList<TTextDocument>.Create(False);
   try
@@ -405,7 +405,7 @@ begin
       TabPage := Pager.Pages[i];
       if TabPage.Tag > 0 then
       begin
-        EditorPage := TEditorForm(TabPage.Tag);
+        EditorPage := TTextEditorForm(TabPage.Tag);
         SourceList.Add(EditorPage.Doc);
       end;
     end;
@@ -428,7 +428,7 @@ begin
     if not App.Docs.ContainsDocument(FilePath) then
     begin
       Doc := App.Docs.OpenDoc(FilePath);
-      PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+      PageHandler.ShowPage(TTextEditorForm, Doc.Id, Doc);
     end;
   end;
 end;
@@ -441,7 +441,7 @@ var
   FilePath: string;
   Doc : TTextDocument;
   TabPage: TTabSheet;
-  EditorForm: TEditorForm;
+  EditorForm: TTextEditorForm;
 begin
 
   FilePath := '';
@@ -470,14 +470,14 @@ begin
     if not Assigned(Doc) then
        Doc := App.Docs.OpenDoc(FilePath);
 
-    TabPage := PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+    TabPage := PageHandler.ShowPage(TTextEditorForm, Doc.Id, Doc);
     if Assigned(TabPage) and (TabPage.Tag > 0) then
     begin
       Pager.ActivePage := TabPage;
 
-      EditorForm := TEditorForm(TabPage.Tag);
+      EditorForm := TTextEditorForm(TabPage.Tag);
       EditorForm.SetFocus();
-      EditorForm.SetFocusedControl(EditorForm.TextEditor.Editor);
+      EditorForm.SetFocusedControl(EditorForm.TextEditor);
       Application.ProcessMessages();
 
       EditorForm.TextEditor.FindAndReplace.Options.Clear();
@@ -502,7 +502,7 @@ var
   Doc: TTextDocument;
 begin
   Doc := App.Docs.CreateNewBufferDocument();
-  PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+  PageHandler.ShowPage(TTextEditorForm, Doc.Id, Doc);
 
   LogBox.AppendLine(Format('New document created: %s', [Doc.RealFilePath]));
 end;
@@ -539,15 +539,15 @@ begin
   if Assigned(Doc) then
   begin
     LogBox.AppendLine(Format('Document already opened: %s', [FilePath]));
-    PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+    PageHandler.ShowPage(TTextEditorForm, Doc.Id, Doc);
   end else begin
     Doc := App.Docs.OpenDoc(FilePath);
-    PageHandler.ShowPage(TEditorForm, Doc.Id, Doc);
+    PageHandler.ShowPage(TTextEditorForm, Doc.Id, Doc);
     LogBox.AppendLine(Format('Document opened: %s', [FilePath]));
   end;
 end;
 
-function TMainForm.GetActiveEditorPage(): TEditorForm;
+function TMainForm.GetActiveEditorPage(): TTextEditorForm;
 var
   TabPage: TTabSheet;
 begin
@@ -557,21 +557,21 @@ begin
   if (not Assigned(TabPage)) or (TabPage.Tag = 0) then
     Exit;
 
-  Result := TEditorForm(TabPage.Tag);
+  Result := TTextEditorForm(TabPage.Tag);
 end;
 
 function TMainForm.CloseQuery: Boolean;
 var
   i : Integer;
   TabPage: TTabSheet;
-  EditorPage: TEditorForm;
+  EditorPage: TTextEditorForm;
 begin
   for i := 0 to Pager.PageCount - 1 do
   begin
     TabPage := Pager.Pages[i];
     if TabPage.Tag > 0 then
     begin
-      EditorPage := TEditorForm(TabPage.Tag);
+      EditorPage := TTextEditorForm(TabPage.Tag);
       if not EditorPage.CanCloseContainer() then
       begin
         Result := False;

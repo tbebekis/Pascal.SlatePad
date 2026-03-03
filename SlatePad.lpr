@@ -18,7 +18,7 @@ uses
   SysUtils, f_MainForm, o_Docs, Tripous, o_App, o_AppSettings,
   o_PageHandler, o_Consts, o_Highlighters, o_TextEditor, 
   o_FindAndReplace, o_FindAndReplaceInFiles, f_FindAndReplaceInFilesDialog,
-  f_AppSettingsDialog, f_PageForm, f_EditorForm, o_Filer
+  f_AppSettingsDialog, f_PageForm, f_TextEditorForm, o_Filer
   { you can add units after this };
 
 {$R *.res}

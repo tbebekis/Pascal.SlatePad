@@ -38,80 +38,46 @@ type
 
   { TTextEditor }
 
-  TTextEditor = class(TComponent, IFindAndReplaceHandler)
+  TTextEditor = class(TATSynEdit, IFindAndReplaceHandler)
   private
-    fEditor: TATSynEdit;
     function GetBorderVisible: Boolean;
-    function GetCaretX: Integer;
-    function GetCaretY: Integer;
-    function GetEnabled: Boolean;
-    function GetFont: TFont;
-    function GetGutterVisible: Boolean;
-    function GetMarginRight: Integer;
-    function GetMinimapTooltipVisible: Boolean;
-    function GetMinimapVisible: Boolean;
-    function GetModified: Boolean;
-    function GetOnChange: TNotifyEvent;
-    function GetOnMouseDown: TMouseEvent;
-    function GetParent: TWinControl;
-    function GetPopupMenu: TPopupMenu;
-    function GetReadOnly: Boolean;
-    function GetRulerVisible: Boolean;
-    function GetShowCurLine: Boolean;
-    function GetText: TEdText;
-    function GetVisible: Boolean;
-    function GetWordWrap: Boolean;
     procedure SetBorderVisible(AValue: Boolean);
+    function GetCaretX: Integer;
     procedure SetCaretX(AValue: Integer);
+    function GetCaretY: Integer;
     procedure SetCaretY(AValue: Integer);
-    procedure SetEnabled(AValue: Boolean);
+    function GetGutterVisible: Boolean;
     procedure SetGutterVisible(AValue: Boolean);
+    function GetMarginRight: Integer;
     procedure SetMarginRight(AValue: Integer);
-    procedure SetMinimapTooltipVisible(AValue: Boolean);
+    function GetMinimapVisible: Boolean;
     procedure SetMinimapVisible(AValue: Boolean);
-    procedure SetModified(AValue: Boolean);
-    procedure SetOnChange(AValue: TNotifyEvent);
-
-    procedure SetOnMouseDown(AValue: TMouseEvent);
-    procedure SetParent(AValue: TWinControl);
-    procedure SetPopupMenu(AValue: TPopupMenu);
+    function GetMinimapTooltipVisible: Boolean;
+    procedure SetMinimapTooltipVisible(AValue: Boolean);
+    function GetReadOnly: Boolean;
     procedure SetReadOnly(AValue: Boolean);
+    function GetRulerVisible: Boolean;
     procedure SetRulerVisible(AValue: Boolean);
-
+    function GetShowCurLine: Boolean;
     procedure SetShowCurLine(AValue: Boolean);
-
-    procedure SetText(AValue: TEdText);
-
-    procedure SetVisible(AValue: Boolean);
+    function GetWordWrap: Boolean;
     procedure SetWordWrap(AValue: Boolean);
+    function GetEditorText: string;
+    procedure SetEditorText(const AValue: string);
   private
     fFindAndReplace: TFindAndReplace;
-
-    fOnKeyDown: TKeyEvent;
-
-    function GetEditorText: string;
-    function GetOnCaretChanged: TNotifyEvent;
-    function GetOnChangeCaretPos: TNotifyEvent;
-    function GetOnChangeZoom: TNotifyEvent;
-    function GetOnModifiedChanged: TNotifyEvent;
-    procedure SetEditorText(const AValue: string);
-    procedure SetOnCaretChanged(AValue: TNotifyEvent);
-    procedure SetOnChangeCaretPos(AValue: TNotifyEvent);
-    procedure SetOnChangeZoom(AValue: TNotifyEvent);
-    procedure SetOnModifiedChanged(AValue: TNotifyEvent);
-
-    procedure Editor_OnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     class function Utf8NextChar(const S: string; var ByteIndex0: Integer; out Info: TUtf8CharInfo): Boolean; static;
     class function IsWordCodePoint(CP: Cardinal): Boolean; static;
     class function Utf8CharCount(const S: string): Integer; static;
     class function Utf8CharIndex0ToByteIndex0(const S: string; CharIndex0: Integer): Integer; static;
     class function Utf8CopyChars(const S: string; StartChar0, LenChars: Integer): string; static;
+  protected
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy(); override;
 
-    procedure SetFocus();
     procedure SetCaretPos(AX, AY: Integer);
 
     class function IsWordChar(const Ch: WideChar): Boolean;
@@ -130,17 +96,10 @@ type
 
     procedure AppSettingsChanged();
 
-    property Editor: TATSynEdit read fEditor;
     property FindAndReplace: TFindAndReplace read fFindAndReplace;
 
-    property Parent: TWinControl read GetParent write SetParent;
-    property Font: TFont read GetFont;
     property WordWrap: Boolean read GetWordWrap write SetWordWrap;
-
-    property Visible: Boolean read GetVisible write SetVisible;
-    property Enabled: Boolean read GetEnabled write SetEnabled;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property Modified: Boolean read GetModified write SetModified;
     property GutterVisible: Boolean read GetGutterVisible write SetGutterVisible;
     property RulerVisible: Boolean read GetRulerVisible write SetRulerVisible;
     property MarginRight: Integer read GetMarginRight write SetMarginRight;
@@ -148,21 +107,11 @@ type
     property MinimapVisible: Boolean read GetMinimapVisible write SetMinimapVisible;
     property MinimapTooltipVisible: Boolean read GetMinimapTooltipVisible write SetMinimapTooltipVisible;
     property BorderVisible: Boolean read GetBorderVisible write SetBorderVisible;
-    property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
 
-    property Text: TEdText read GetText write SetText;
     property EditorText: string read GetEditorText write SetEditorText ;
 
     property CaretX: Integer read GetCaretX write SetCaretX;
     property CaretY: Integer read GetCaretY write SetCaretY;
-
-    property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
-    property OnKeyDown: TKeyEvent read fOnKeyDown write fOnKeyDown;
-    property OnMouseDown: TMouseEvent read GetOnMouseDown write SetOnMouseDown;
-    property OnModifiedChanged: TNotifyEvent read GetOnModifiedChanged write SetOnModifiedChanged;
-    property OnCaretChanged: TNotifyEvent read GetOnCaretChanged  write SetOnCaretChanged;
-    property OnChangeCaretPos: TNotifyEvent read GetOnChangeCaretPos write SetOnChangeCaretPos;
-    property OnChangeZoom: TNotifyEvent read GetOnChangeZoom write SetOnChangeZoom;
   end;
 
 (*
@@ -360,17 +309,17 @@ end;
 
 
 
-procedure SelectRangeXY(fEditor: TATSynEdit; X1, Y1, X2, Y2: Integer; HasSel: Boolean);
+procedure SelectRangeXY(Editor: TATSynEdit; X1, Y1, X2, Y2: Integer; HasSel: Boolean);
 begin
-  fEditor.Carets.Clear;
+  Editor.Carets.Clear;
 
   if HasSel then
-    fEditor.Carets.Add(X1, Y1, X2, Y2, True)
+    Editor.Carets.Add(X1, Y1, X2, Y2, True)
   else
-    fEditor.Carets.Add(X1, Y1, -1, -1, True);
+    Editor.Carets.Add(X1, Y1, -1, -1, True);
 
-  fEditor.Carets.Sort(True);
-  fEditor.Carets.DoChanged;
+  Editor.Carets.Sort(True);
+  Editor.Carets.DoChanged;
 end;
 
 
@@ -496,20 +445,20 @@ end;
 constructor TTextEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fEditor := TATSynEdit.Create(Self);
-  fEditor.OptUnprintedVisible := False;   // hide non-printable characters
-  fEditor.OptRulerVisible:= App.Settings.RulerVisible;
-  fEditor.OptMarginRight := 100000;
-  fEditor.OptShowCurLine := App.Settings.ShowCurLine;
-  fEditor.OptGutterVisible := App.Settings.GutterVisible;
-  fEditor.OptBorderVisible := True;
-  fEditor.OptMinimapVisible := App.Settings.MinimapVisible;
-  fEditor.OptMinimapTooltipVisible := App.Settings.MinimapTooltipVisible;
-  fEditor.OptMinimapCharWidth := 60; // controls minimap width
+
+  Align := alClient;
+
+  OptUnprintedVisible := False;   // hide non-printable characters
+  OptRulerVisible:= App.Settings.RulerVisible;
+  OptMarginRight := 100000;
+  OptShowCurLine := App.Settings.ShowCurLine;
+  OptGutterVisible := App.Settings.GutterVisible;
+  OptBorderVisible := True;
+  OptMinimapVisible := App.Settings.MinimapVisible;
+  OptMinimapTooltipVisible := App.Settings.MinimapTooltipVisible;
+  OptMinimapCharWidth := 60; // controls minimap width
 
   AppSettingsChanged();
-
-  fEditor.OnKeyDown := Editor_OnKeyDown;
 
   fFindAndReplace := TFindAndReplace.Create(Self);
   fFindAndReplace.Handler := Self;
@@ -523,303 +472,155 @@ end;
 
 procedure TTextEditor.AppSettingsChanged();
 begin
-  fEditor.OptRulerVisible:= App.Settings.RulerVisible;
-  fEditor.OptShowCurLine := App.Settings.ShowCurLine;
-  fEditor.OptGutterVisible := App.Settings.GutterVisible;
-  fEditor.OptMinimapVisible := App.Settings.MinimapVisible;
-  fEditor.OptMinimapTooltipVisible := App.Settings.MinimapTooltipVisible;
+  OptRulerVisible:= App.Settings.RulerVisible;
+  OptShowCurLine := App.Settings.ShowCurLine;
+  OptGutterVisible := App.Settings.GutterVisible;
+  OptMinimapVisible := App.Settings.MinimapVisible;
+  OptMinimapTooltipVisible := App.Settings.MinimapTooltipVisible;
 
-  fEditor.Font.Name := App.Settings.FontName;
-  fEditor.Font.Size := App.Settings.FontSize;
+  Font.Name := App.Settings.FontName;
+  Font.Size := App.Settings.FontSize;
 
-  fEditor.Update();
-end;
-
-procedure TTextEditor.SetFocus();
-begin
-  if fEditor.CanFocus then
-    fEditor.SetFocus;
+  Update();
 end;
 
 procedure TTextEditor.SetCaretPos(AX, AY: Integer);
 begin
-  fEditor.Carets[0].PosX := AX;
-  fEditor.Carets[0].PosY := AY;
-
-  // the important part:
-  fEditor.DoGotoCaret(TATCaretEdge.Top);  // caret index 0, ensure visible (scroll)
-  // or in some versions:
-  // fEditor.DoScrollToCaret;
-  // fEditor.DoMakeCaretVisible;
-  // fEditor.DoEnsureCaretVisible;
-
-  fEditor.Update;
+  Carets[0].PosX := AX;
+  Carets[0].PosY := AY;
+  DoGotoCaret(TATCaretEdge.Top);  // caret index 0, ensure visible (scroll)
+  Update;
 end;
 
-function TTextEditor.GetParent: TWinControl;
-begin
-  Result := fEditor.Parent;
-end;
-
-procedure TTextEditor.SetParent(AValue: TWinControl);
-begin
-  if fEditor.Parent <> AValue then
-  begin
-    fEditor.Parent := AValue;
-    fEditor.Align := alClient;
-  end;
-end;
-
-function TTextEditor.GetFont: TFont;
-begin
-  Result := fEditor.Font;
-end;
 
 function TTextEditor.GetGutterVisible: Boolean;
 begin
-  Result := fEditor.OptGutterVisible;
+  Result := OptGutterVisible;
 end;
 
 procedure TTextEditor.SetGutterVisible(AValue: Boolean);
 begin
-  fEditor.OptGutterVisible := AValue;
+  OptGutterVisible := AValue;
 end;
 
 function TTextEditor.GetMarginRight: Integer;
 begin
-  Result := fEditor.OptMarginRight;
+  Result := OptMarginRight;
 end;
 
 procedure TTextEditor.SetMarginRight(AValue: Integer);
 begin
-  fEditor.OptMarginRight := AValue;
+  OptMarginRight := AValue;
 end;
 
 function TTextEditor.GetMinimapVisible: Boolean;
 begin
-  Result := fEditor.OptMinimapVisible;
+  Result := OptMinimapVisible;
 end;
 
 procedure TTextEditor.SetMinimapVisible(AValue: Boolean);
 begin
-  fEditor.OptMinimapVisible := AValue;;
+  OptMinimapVisible := AValue;;
 end;
 
 function TTextEditor.GetMinimapTooltipVisible: Boolean;
 begin
-  Result := fEditor.OptMinimapTooltipVisible;
+  Result := OptMinimapTooltipVisible;
 end;
 
 procedure TTextEditor.SetMinimapTooltipVisible(AValue: Boolean);
 begin
-  fEditor.OptMinimapTooltipVisible := AValue;
+  OptMinimapTooltipVisible := AValue;
 end;
 
 function TTextEditor.GetRulerVisible: Boolean;
 begin
-  Result := fEditor.OptRulerVisible
+  Result := OptRulerVisible
 end;
 
 procedure TTextEditor.SetRulerVisible(AValue: Boolean);
 begin
-  fEditor.OptRulerVisible := AValue;
+  OptRulerVisible := AValue;
 end;
 
 function TTextEditor.GetShowCurLine: Boolean;
 begin
-  Result := fEditor.OptShowCurLine
+  Result := OptShowCurLine
 end;
 
 procedure TTextEditor.SetShowCurLine(AValue: Boolean);
 begin
-  fEditor.OptShowCurLine := AValue;
+  OptShowCurLine := AValue;
 end;
 
 function TTextEditor.GetWordWrap: Boolean;
 begin
-  Result := fEditor.OptWrapMode = TATEditorWrapMode.ModeOn;
+  Result := OptWrapMode = TATEditorWrapMode.ModeOn;
 end;
 
 procedure TTextEditor.SetWordWrap(AValue: Boolean);
 begin
   if AValue then
-    fEditor.OptWrapMode := TATEditorWrapMode.ModeOn
+    OptWrapMode := TATEditorWrapMode.ModeOn
   else
-    fEditor.OptWrapMode := TATEditorWrapMode.ModeOff;
-end;
-
-function TTextEditor.GetOnModifiedChanged: TNotifyEvent;
-begin
-  Result := fEditor.OnChangeModified;
-end;
-
-function TTextEditor.GetOnCaretChanged: TNotifyEvent;
-begin
-  Result := fEditor.Carets.OnCaretChanged;
-end;
-
-procedure TTextEditor.SetOnCaretChanged(AValue: TNotifyEvent);
-begin
-  fEditor.Carets.OnCaretChanged := AValue;
-end;
-
-function TTextEditor.GetOnChangeCaretPos: TNotifyEvent;
-begin
-  Result := fEditor.OnChangeCaretPos;
-end;
-
-procedure TTextEditor.SetOnChangeCaretPos(AValue: TNotifyEvent);
-begin
-  fEditor.OnChangeCaretPos := AValue;
-end;
-
-function TTextEditor.GetOnChangeZoom: TNotifyEvent;
-begin
-  Result := fEditor.OnChangeZoom;
-end;
-
-procedure TTextEditor.SetOnChangeZoom(AValue: TNotifyEvent);
-begin
-  fEditor.OnChangeZoom := AValue;
-end;
-
-procedure TTextEditor.SetOnModifiedChanged(AValue: TNotifyEvent);
-begin
-  fEditor.OnChangeModified := AValue;
+    OptWrapMode := TATEditorWrapMode.ModeOff;
 end;
 
 function TTextEditor.GetBorderVisible: Boolean;
 begin
-  Result := fEditor.OptBorderVisible;
+  Result := OptBorderVisible;
 end;
 
 procedure TTextEditor.SetBorderVisible(AValue: Boolean);
 begin
-  fEditor.OptBorderVisible := AValue;
+  OptBorderVisible := AValue;
 end;
-
-function TTextEditor.GetVisible: Boolean;
-begin
-  Result := fEditor.Visible;
-end;
-
-procedure TTextEditor.SetVisible(AValue: Boolean);
-begin
-  fEditor.Visible := AValue;
-end;
-
-function TTextEditor.GetEnabled: Boolean;
-begin
-  Result := fEditor.Enabled;
-end;
-
-procedure TTextEditor.SetEnabled(AValue: Boolean);
-begin
-  fEditor.Enabled := AValue;
-end;
-
-function TTextEditor.GetPopupMenu: TPopupMenu;
-begin
-  Result := fEditor.PopupMenu;
-end;
-
-procedure TTextEditor.SetPopupMenu(AValue: TPopupMenu);
-begin
-  fEditor.PopupMenu := AValue;
-end;
-
-function TTextEditor.GetText: TEdText;
-begin
-  Result := fEditor.Text;
-end;
-
-procedure TTextEditor.SetText(AValue: TEdText);
-begin
-  fEditor.Text := AValue;
-end;
-
-(*
-function TTextEditor.GetEditorText: string;
-begin
-  Result := UTF8Encode(fEditor.Text);
-end;
-
-procedure TTextEditor.SetEditorText(AValue: string);
-begin
-  fEditor.Text := UTF8Decode(AValue);
-end;
-*)
 
 function TTextEditor.GetEditorText: string;
 begin
-  Result := UTF16ToUTF8(fEditor.Text);
+  Result := UTF16ToUTF8(Text);
 end;
 
 procedure TTextEditor.SetEditorText(const AValue: string);
+var
+  WasReadOnly: Boolean;
 begin
-  fEditor.Text := UTF8ToUTF16(AValue);
-end;
-
-function TTextEditor.GetModified: Boolean;
-begin
-  Result := fEditor.Modified;
-end;
-
-procedure TTextEditor.SetModified(AValue: Boolean);
-begin
-  fEditor.Modified := AValue;
+  WasReadOnly := ReadOnly;
+  ReadOnly := False;       // it does not accept Text when it is read-only
+  Text := UTF8ToUTF16(AValue);
+  ReadOnly := WasReadOnly;
 end;
 
 function TTextEditor.GetReadOnly: Boolean;
 begin
-  Result := fEditor.ModeReadOnly;
+  Result := ModeReadOnly;
 end;
 
 procedure TTextEditor.SetReadOnly(AValue: Boolean);
 begin
-  fEditor.ModeReadOnly := AValue;
-end;
-
-function TTextEditor.GetOnChange: TNotifyEvent;
-begin
-  Result := fEditor.OnChange;
-end;
-
-procedure TTextEditor.SetOnChange(AValue: TNotifyEvent);
-begin
-  fEditor.OnChange := AValue;
-end;
-
-function TTextEditor.GetOnMouseDown: TMouseEvent;
-begin
-  Result := fEditor.OnMouseDown;
-end;
-
-procedure TTextEditor.SetOnMouseDown(AValue: TMouseEvent);
-begin
-  fEditor.OnMouseDown := AValue;
+  ModeReadOnly := AValue;
 end;
 
 function TTextEditor.GetCaretX: Integer;
 begin
-  Result := fEditor.Carets[0].PosX;
+  Result := Carets[0].PosX;
 end;
 
 procedure TTextEditor.SetCaretX(AValue: Integer);
 begin
-  fEditor.Carets[0].PosX := AValue;
-  fEditor.Update;
+  Carets[0].PosX := AValue;
+  Update;
 end;
 
 function TTextEditor.GetCaretY: Integer;
 begin
-  Result := fEditor.Carets[0].PosY;
+  Result := Carets[0].PosY;
 end;
 
 procedure TTextEditor.SetCaretY(AValue: Integer);
 begin
-  fEditor.Carets[0].PosY := AValue;
-  fEditor.Update;
+  Carets[0].PosY := AValue;
+  Update;
 end;
 
 class function TTextEditor.IsWordChar(const Ch: WideChar): Boolean;
@@ -864,12 +665,12 @@ begin
   WordLenChars := 0;
   Result := False;
 
-  Y0 := fEditor.Carets[0].PosY;
-  X0 := fEditor.Carets[0].PosX;
+  Y0 := Carets[0].PosY;
+  X0 := Carets[0].PosX;
 
-  if (Y0 < 0) or (Y0 >= fEditor.Strings.Count) then Exit;
+  if (Y0 < 0) or (Y0 >= Strings.Count) then Exit;
 
-  Line := fEditor.Strings.Lines[Y0]; // ✅ no warning (UnicodeString -> UnicodeString)
+  Line := Strings.Lines[Y0]; // ✅ no warning (UnicodeString -> UnicodeString)
   LenU := Length(Line);
   if LenU = 0 then Exit;
 
@@ -917,7 +718,7 @@ begin
   FindAndReplace.ShowDialog(Term);
 end;
 
-procedure TTextEditor.Editor_OnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TTextEditor.KeyDown(var Key: Word; Shift: TShiftState);
 var
   Term: UnicodeString;
 begin
@@ -957,8 +758,8 @@ var
   begin
     X1 := P1 - 1;          // 0-based
     X2 := X1 + Len;
-    SelectRangeXY(fEditor, X1, ALine, X2, ALine, True);
-    fEditor.Update;
+    SelectRangeXY(Self, X1, ALine, X2, ALine, True);
+    Update;
   end;
 
   function FindForward: Boolean;
@@ -971,10 +772,10 @@ var
     LFind := Length(FindU);
 
     y1 := 0;
-    y2 := fEditor.Strings.Count - 1;
+    y2 := Strings.Count - 1;
 
-    startX0 := fEditor.Carets[0].PosX;
-    y0 := fEditor.Carets[0].PosY;
+    startX0 := Carets[0].PosX;
+    y0 := Carets[0].PosY;
 
     if HasSel then
     begin
@@ -997,13 +798,13 @@ var
         startX0 := SelX1;
 
       // skip current selection (single line selection case)
-      if (fEditor.Carets[0].PosY = SelY1) and (SelY1 = SelY2) then
+      if (Carets[0].PosY = SelY1) and (SelY1 = SelY2) then
         startX0 := Max(startX0, SelX2);
     end;
 
     for iy := y0 to y2 do
     begin
-      Line := fEditor.Strings.Lines[iy];
+      Line := Strings.Lines[iy];
       HayN := NormU(Line, Opt.MatchCase);
 
       if iy = y0 then
@@ -1049,10 +850,10 @@ var
     LFind := Length(FindU);
 
     y1 := 0;
-    y2 := fEditor.Strings.Count - 1;
+    y2 := Strings.Count - 1;
 
-    startX0 := fEditor.Carets[0].PosX;
-    y0 := fEditor.Carets[0].PosY;
+    startX0 := Carets[0].PosX;
+    y0 := Carets[0].PosY;
 
     if HasSel then
     begin
@@ -1075,13 +876,13 @@ var
         startX0 := SelX2;
 
       // skip current selection (single line selection case)
-      if (fEditor.Carets[0].PosY = SelY1) and (SelY1 = SelY2) then
+      if (Carets[0].PosY = SelY1) and (SelY1 = SelY2) then
         startX0 := Min(startX0, SelX1);
     end;
 
     for iy := y0 downto y1 do
     begin
-      Line := fEditor.Strings.Lines[iy];
+      Line := Strings.Lines[iy];
       HayN := NormU(Line, Opt.MatchCase);
 
       if iy = y0 then
@@ -1118,13 +919,12 @@ var
 
 begin
   Result := 0;
-  if fEditor = nil then Exit;
 
   Opt := fFindAndReplace.Options;
   FindU := Opt.TextToFindU;
   if FindU = '' then Exit;
 
-  HasSel := CaretHasSel(fEditor, SelX1, SelY1, SelX2, SelY2);
+  HasSel := CaretHasSel(Self, SelX1, SelY1, SelX2, SelY2);
   if Opt.SelectionOnly and (not HasSel) then Exit(0);
 
   NeedleN := NormU(FindU, Opt.MatchCase);
@@ -1154,7 +954,6 @@ var
   Start1, LFind: Integer;
 begin
   Result := 0;
-  if fEditor = nil then Exit;
 
   Opt := fFindAndReplace.Options;
   FindU := Opt.TextToFindU;
@@ -1165,20 +964,20 @@ begin
   if FindNext(Backward) <= 0 then Exit(0);
 
   // 2) Replace current selection (expected single-line match)
-  HasSel := CaretHasSel(fEditor, X1,Y1,X2,Y2);
+  HasSel := CaretHasSel(Self, X1,Y1,X2,Y2);
   if (not HasSel) or (Y1 <> Y2) then Exit(0);
 
-  Line := fEditor.Strings.Lines[Y1];
+  Line := Strings.Lines[Y1];
   LFind := X2 - X1;
   if LFind <= 0 then Exit(0);
 
   Start1 := X1 + 1; // 1-based
   Line := Copy(Line, 1, Start1-1) + ReplU + Copy(Line, Start1 + LFind, MaxInt);
-  fEditor.Strings.Lines[Y1] := Line;
+  Strings.Lines[Y1] := Line;
 
   // select replaced text
-  SelectRangeXY(fEditor, X1, Y1, X1 + Length(ReplU), Y1, True);
-  fEditor.Update;
+  SelectRangeXY(Self, X1, Y1, X1 + Length(ReplU), Y1, True);
+  Update;
 
   Result := 1;
 end;
@@ -1194,25 +993,24 @@ var
   Cnt: Integer;
 begin
   Result := 0;
-  if fEditor = nil then Exit;
 
   Opt := fFindAndReplace.Options;
   FindU := Opt.TextToFindU;
   ReplU := Opt.ReplaceWithU;
   if FindU = '' then Exit;
 
-  HasSel := CaretHasSel(fEditor, SelX1, SelY1, SelX2, SelY2);
+  HasSel := CaretHasSel(Self, SelX1, SelY1, SelX2, SelY2);
   if Opt.SelectionOnly and (not HasSel) then Exit(0);
 
   if not Opt.SelectionOnly then
   begin
-    for y := 0 to fEditor.Strings.Count - 1 do
+    for y := 0 to Strings.Count - 1 do
     begin
-      Line := fEditor.Strings.Lines[y];
+      Line := Strings.Lines[y];
       Cnt := ReplaceAllInSegmentU(Line, FindU, ReplU, Opt.MatchCase, Opt.WholeWord, NewSeg);
       if Cnt > 0 then
       begin
-        fEditor.Strings.Lines[y] := NewSeg;
+        Strings.Lines[y] := NewSeg;
         Inc(Result, Cnt);
       end;
     end;
@@ -1222,7 +1020,7 @@ begin
   // SelectionOnly: replace only inside selected text (per-line segments)
   for y := SelY1 to SelY2 do
   begin
-    Line := fEditor.Strings.Lines[y];
+    Line := Strings.Lines[y];
 
     if (y = SelY1) and (y = SelY2) then
     begin
@@ -1252,23 +1050,22 @@ begin
     Cnt := ReplaceAllInSegmentU(Seg, FindU, ReplU, Opt.MatchCase, Opt.WholeWord, NewSeg);
     if Cnt > 0 then
     begin
-      fEditor.Strings.Lines[y] := Prefix + NewSeg + Suffix;
+      Strings.Lines[y] := Prefix + NewSeg + Suffix;
       Inc(Result, Cnt);
     end;
   end;
 
-  fEditor.Update;
+  Update;
 end;
 
 procedure TTextEditor.ClearHighlights();
 var
   X, Y: Integer;
 begin
-  if fEditor = nil then Exit;
-  X := fEditor.Carets[0].PosX;
-  Y := fEditor.Carets[0].PosY;
-  SelectRangeXY(fEditor, X, Y, -1, -1, False); // keep caret, no selection
-  fEditor.Update;
+  X := Carets[0].PosX;
+  Y := Carets[0].PosY;
+  SelectRangeXY(Self, X, Y, -1, -1, False); // keep caret, no selection
+  Update;
 end;
 
 procedure TTextEditor.HighlightAll();
@@ -1282,32 +1079,30 @@ var
   CaretX, CaretY: Integer;
   Added: Integer;
 begin
-  if fEditor = nil then Exit;
-
   Opt := fFindAndReplace.Options;
   FindU := Opt.TextToFindU;
   if FindU = '' then begin ClearHighlights; Exit; end;
 
-  HasSel := CaretHasSel(fEditor, SelX1, SelY1, SelX2, SelY2);
+  HasSel := CaretHasSel(Self, SelX1, SelY1, SelX2, SelY2);
   if Opt.SelectionOnly and (not HasSel) then Exit;
 
   NeedleN := NormU(FindU, Opt.MatchCase);
   LFind := Length(FindU);
 
   // keep main caret
-  CaretX := fEditor.Carets[0].PosX;
-  CaretY := fEditor.Carets[0].PosY;
+  CaretX := Carets[0].PosX;
+  CaretY := Carets[0].PosY;
 
-  fEditor.Carets.Clear;
-  fEditor.Carets.Add(CaretX, CaretY, -1, -1, True);
+  Carets.Clear;
+  Carets.Add(CaretX, CaretY, -1, -1, True);
 
   Added := 0;
 
-  for y := 0 to fEditor.Strings.Count - 1 do
+  for y := 0 to Strings.Count - 1 do
   begin
     if Opt.SelectionOnly and ((y < SelY1) or (y > SelY2)) then Continue;
 
-    Line := fEditor.Strings.Lines[y];
+    Line := Strings.Lines[y];
     HayN := NormU(Line, Opt.MatchCase);
 
     Start1 := 1;
@@ -1333,7 +1128,7 @@ begin
           Break;
       end;
 
-      fEditor.Carets.Add(P-1, y, (P-1)+LFind, y, True);
+      Carets.Add(P-1, y, (P-1)+LFind, y, True);
       Inc(Added);
       if Added > 2000 then Break; // safety cap
       Start1 := P + 1;
@@ -1342,9 +1137,9 @@ begin
     if Added > 2000 then Break;
   end;
 
-  fEditor.Carets.Sort(True);
-  fEditor.Carets.DoChanged;
-  fEditor.Update;
+  Carets.Sort(True);
+  Carets.DoChanged;
+  Update;
 end;
 
 

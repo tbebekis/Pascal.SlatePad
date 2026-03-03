@@ -250,12 +250,12 @@
         <UnitName Value="f_PageForm"/>
       </Unit>
       <Unit>
-        <Filename Value="f_editorform.pas"/>
+        <Filename Value="f_texteditorform.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditorForm"/>
+        <ComponentName Value="TextEditorForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_EditorForm"/>
+        <UnitName Value="f_TextEditorForm"/>
       </Unit>
       <Unit>
         <Filename Value="o_filer.pas"/>

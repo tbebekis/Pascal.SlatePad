@@ -1,5 +1,7 @@
-inherited EditorForm: TEditorForm
+inherited TextEditorForm: TTextEditorForm
+  Left = 0
   Height = 396
+  Top = 0
   Width = 641
   ClientHeight = 396
   ClientWidth = 641

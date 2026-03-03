@@ -3,15 +3,15 @@
   <ProjectSession>
     <Version Value="12"/>
     <ManyBuildModesSelection Value="Debug"/>
-    <BuildModes Active="Linux x64 Release"/>
+    <BuildModes Active="Debug"/>
     <Units>
       <Unit>
         <Filename Value="SlatePad.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="5"/>
-        <CursorPos X="58" Y="23"/>
-        <UsageCount Value="68"/>
+        <TopLine Value="12"/>
+        <CursorPos X="54" Y="21"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="f_mainform.pas"/>
@@ -20,20 +20,20 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_MainForm"/>
-        <TopLine Value="22"/>
-        <CursorPos X="57" Y="41"/>
-        <UsageCount Value="68"/>
+        <TopLine Value="299"/>
+        <CursorPos Y="307"/>
+        <UsageCount Value="80"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_docs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Docs"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="90"/>
-        <CursorPos X="26" Y="113"/>
-        <UsageCount Value="68"/>
+        <TopLine Value="370"/>
+        <CursorPos X="40" Y="391"/>
+        <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -43,16 +43,16 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="265"/>
         <CursorPos X="25" Y="223"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="o_app.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_App"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="80"/>
-        <CursorPos X="27" Y="84"/>
-        <UsageCount Value="68"/>
+        <TopLine Value="173"/>
+        <CursorPos X="41" Y="186"/>
+        <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -62,16 +62,17 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="54"/>
         <CursorPos X="29" Y="41"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="o_pagehandler.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_PageHandler"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="280"/>
-        <CursorPos X="3" Y="295"/>
-        <UsageCount Value="68"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="206"/>
+        <CursorPos X="62" Y="221"/>
+        <UsageCount Value="80"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="o_consts.pas"/>
@@ -79,7 +80,7 @@
         <UnitName Value="o_Consts"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="69" Y="5"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="o_highlighters.pas"/>
@@ -87,16 +88,16 @@
         <UnitName Value="o_Highlighters"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="16" Y="15"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="o_texteditor.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_TextEditor"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="144"/>
-        <CursorPos X="66" Y="159"/>
-        <UsageCount Value="68"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="443"/>
+        <CursorPos X="31" Y="447"/>
+        <UsageCount Value="80"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -107,23 +108,25 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_FindAndReplaceDialog"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="o_findandreplace.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_FindAndReplace"/>
-        <UsageCount Value="68"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="125"/>
+        <CursorPos X="40" Y="127"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="o_findandreplaceinfiles.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_FindAndReplaceInFiles"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="-1"/>
         <TopLine Value="725"/>
         <CursorPos Y="743"/>
-        <UsageCount Value="68"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_findandreplaceinfilesdialog.pas"/>
@@ -134,7 +137,7 @@
         <UnitName Value="f_FindAndReplaceInFilesDialog"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="35"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="Dialogs/f_appsettingsdialog.pas"/>
@@ -145,8 +148,8 @@
         <UnitName Value="f_AppSettingsDialog"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="125"/>
-        <CursorPos X="49" Y="134"/>
-        <UsageCount Value="68"/>
+        <CursorPos X="80" Y="136"/>
+        <UsageCount Value="80"/>
       </Unit>
       <Unit>
         <Filename Value="f_pageform.pas"/>
@@ -155,23 +158,24 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="f_PageForm"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="28"/>
-        <CursorPos X="42" Y="41"/>
-        <UsageCount Value="68"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="84"/>
+        <CursorPos X="33" Y="102"/>
+        <UsageCount Value="80"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="f_editorform.pas"/>
+        <Filename Value="f_texteditorform.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="EditorForm"/>
+        <ComponentName Value="TextEditorForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="f_EditorForm"/>
-        <IsVisibleTab Value="True"/>
+        <UnitName Value="f_TextEditorForm"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="357"/>
-        <CursorPos X="61" Y="372"/>
-        <UsageCount Value="66"/>
+        <TopLine Value="247"/>
+        <CursorPos X="54" Y="266"/>
+        <UsageCount Value="78"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit>
@@ -180,9 +184,9 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="o_Filer"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="53"/>
-        <CursorPos X="99" Y="73"/>
-        <UsageCount Value="47"/>
+        <TopLine Value="43"/>
+        <CursorPos X="39" Y="58"/>
+        <UsageCount Value="59"/>
       </Unit>
       <Unit>
         <Filename Value="fr_framepage.pas"/>
@@ -300,62 +304,142 @@
         <CursorPos Y="1008"/>
         <UsageCount Value="11"/>
       </Unit>
+      <Unit>
+        <Filename Value="/usr/share/lazarus/4.4.0/lcl/include/customform.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="59"/>
+        <CursorPos Y="75"/>
+        <UsageCount Value="10"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_texteditorform.lfm"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="15"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
+      <Unit>
+        <Filename Value="f_mainform.lfm"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit>
     </Units>
     <OtherDefines Count="1">
       <Define0 Value="DEBUG"/>
     </OtherDefines>
-    <JumpHistory HistoryIndex="12">
+    <JumpHistory HistoryIndex="27">
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="195" TopLine="169"/>
+        <Filename Value="o_pagehandler.pas"/>
+        <Caret Line="222" TopLine="206"/>
+      </Position>
+      <Position>
+        <Filename Value="o_pagehandler.pas"/>
+        <Caret Line="223" TopLine="206"/>
+      </Position>
+      <Position>
+        <Filename Value="o_pagehandler.pas"/>
+        <Caret Line="224" TopLine="206"/>
+      </Position>
+      <Position>
+        <Filename Value="o_pagehandler.pas"/>
+        <Caret Line="225" TopLine="206"/>
+      </Position>
+      <Position>
+        <Filename Value="o_pagehandler.pas"/>
+        <Caret Line="227" Column="21" TopLine="206"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="101" TopLine="95"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="103" TopLine="95"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="98" Column="30" TopLine="95"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="105" TopLine="95"/>
+      </Position>
+      <Position>
+        <Filename Value="o_pagehandler.pas"/>
+        <Caret Line="227" Column="21" TopLine="206"/>
       </Position>
       <Position>
         <Filename Value="f_mainform.pas"/>
-        <Caret Line="196" TopLine="170"/>
+        <Caret Line="307" TopLine="299"/>
       </Position>
       <Position>
         <Filename Value="f_mainform.pas"/>
-        <Caret Line="514" Column="41" TopLine="496"/>
+        <Caret Line="309" TopLine="299"/>
       </Position>
       <Position>
         <Filename Value="f_mainform.pas"/>
-        <Caret Line="76" Column="47" TopLine="56"/>
+        <Caret Line="310" TopLine="299"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="101" TopLine="95"/>
       </Position>
       <Position>
         <Filename Value="f_mainform.pas"/>
-        <Caret Line="221" Column="29" TopLine="204"/>
+        <Caret Line="307" TopLine="299"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="223" Column="14" TopLine="208"/>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="362" Column="9" TopLine="348"/>
       </Position>
       <Position>
-        <Filename Value="f_mainform.pas"/>
-        <Caret Line="530" Column="57" TopLine="520"/>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="141" TopLine="122"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="67" Column="39" TopLine="58"/>
       </Position>
       <Position>
         <Filename Value="o_texteditor.pas"/>
-        <Caret Line="554" Column="42" TopLine="543"/>
+        <Caret Line="78" Column="31" TopLine="72"/>
       </Position>
       <Position>
-        <Filename Value="f_editorform.pas"/>
-        <Caret Line="69" Column="52" TopLine="55"/>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="74" Column="22" TopLine="59"/>
       </Position>
       <Position>
-        <Filename Value="f_editorform.pas"/>
-        <Caret Line="59" Column="5" TopLine="56"/>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="219" Column="33" TopLine="207"/>
       </Position>
       <Position>
-        <Filename Value="f_editorform.pas"/>
-        <Caret Line="113" Column="39" TopLine="99"/>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="76" Column="15" TopLine="61"/>
       </Position>
       <Position>
-        <Filename Value="f_editorform.pas"/>
-        <Caret Line="59" Column="15" TopLine="46"/>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="262" Column="50" TopLine="248"/>
       </Position>
       <Position>
-        <Filename Value="f_editorform.pas"/>
-        <Caret Line="375" Column="49" TopLine="368"/>
+        <Filename Value="f_pageform.pas"/>
+        <Caret Line="45" Column="15" TopLine="31"/>
+      </Position>
+      <Position>
+        <Filename Value="f_pageform.pas"/>
+        <Caret Line="30" Column="15" TopLine="16"/>
+      </Position>
+      <Position>
+        <Filename Value="f_pageform.pas"/>
+        <Caret Line="60" Column="47" TopLine="35"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="249" Column="46" TopLine="248"/>
+      </Position>
+      <Position>
+        <Filename Value="f_texteditorform.pas"/>
+        <Caret Line="266" Column="31" TopLine="247"/>
       </Position>
     </JumpHistory>
     <RunParams>
