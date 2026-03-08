@@ -34,6 +34,8 @@ type
     fDiskMTimeUtc: TDateTime;
     fDiskSize: Int64;
 
+    fSuppressDiskEventsUntilUtc: TDateTime;
+
     function GetBufferFilePath: string;
     function GetIsBuffer: Boolean;
     function GetIsFirst: Boolean;
@@ -49,6 +51,9 @@ type
 
     procedure UpdateDiskState();
     function DiskSignatureChanged(out NewExists: Boolean; out NewMTimeUtc: TDateTime; out NewSize: Int64): Boolean;
+
+    procedure NotifySavedByApp();
+    function IsDiskEventSuppressed: Boolean;
 
     property Title: string read GetTitle;
 
@@ -204,6 +209,7 @@ begin
   //Sys.WriteUtf8TextFile(RealFilePath, Text, False);
   Filer.WriteTextFile(RealFilePath, Text, fFileReadInfo.Encoding);
   LastSavedUtc := NowUTC;
+  UpdateDiskState();
 end;
 
 procedure TTextDocument.SaveAs(const Text: string; const AFilePath: string);
@@ -285,6 +291,20 @@ begin
     (NewExists <> fDiskExists) or
     (Abs(NewMTimeUtc - fDiskMTimeUtc) > (1.0 / (24*60*60))) or // >1 sec
     (NewSize <> fDiskSize);
+end;
+
+procedure TTextDocument.NotifySavedByApp();
+var
+  SuppressDays: Double;
+begin
+  SuppressDays := (App.DocMonitorIntervalMSecs * 3) / (24 * 60 * 60 * 1000);
+
+  fSuppressDiskEventsUntilUtc := NowUTC + SuppressDays;
+end;
+
+function TTextDocument.IsDiskEventSuppressed: Boolean;
+begin
+  Result := NowUTC <= fSuppressDiskEventsUntilUtc;
 end;
 
 

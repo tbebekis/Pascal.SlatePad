@@ -23,6 +23,9 @@ inherited TextEditorForm: TTextEditorForm
         Width = 140
       end    
       item
+        Width = 70
+      end    
+      item
         Width = 120
       end    
       item

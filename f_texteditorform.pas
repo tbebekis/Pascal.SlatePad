@@ -18,7 +18,6 @@ uses
   , f_PageForm
   , o_Docs
   , o_TextEditor
-  , o_FindAndReplace
   ;
 
 
@@ -76,6 +75,8 @@ type
     procedure ReLoadDoc();
 
     procedure UpdateStatusBar();
+
+    procedure ClosePage(); override;
 
     property Doc : TTextDocument read fDoc write fDoc;
     property TextEditor: TTextEditor read fTextEditor;
@@ -161,7 +162,6 @@ begin
   UpdateStatusBar();
 
   TitleText := Doc.Title;
-
 end;
 
 function TTextEditorForm.CanCloseContainer(): Boolean;
@@ -297,7 +297,17 @@ begin
     TextEditor.WordWrap := not TextEditor.WordWrap
   else if btnClose = Sender then
     App.ClosePage(Id);
+end;
 
+procedure TTextEditorForm.ClosePage();
+begin
+  if Doc.IsBuffer then
+  begin
+    App.Docs.List.Remove(Doc);
+    App.Docs.Save();
+  end;
+
+  inherited ClosePage();
 end;
 
 procedure TTextEditorForm.Editor_Change(Sender: TObject);
@@ -375,9 +385,9 @@ begin
   P := ToolBar.Parent;
   ToolBar.Parent := nil;
   try
-    btnSave  := AddButton(ToolBar, 'DISK', 'Save', AnyClick);
+    btnSave  := AddButton(ToolBar, 'DISK', 'Save (Ctrl + S)', AnyClick);
     btnSaveAs := AddButton(ToolBar, 'DISK_MULTIPLE', 'Save As', AnyClick);
-    btnFind := AddButton(ToolBar, 'PAGE_FIND', 'Find', AnyClick);
+    btnFind := AddButton(ToolBar, 'PAGE_FIND', 'Find (Ctrl + F)', AnyClick);
     btnToggleWordWrap := AddButton(ToolBar, 'TEXT_DOCUMENT_WRAP', 'Word Wrap', AnyClick);
     btnShowFolder := AddButton(ToolBar, 'FOLDER_GO', 'Show in folder', AnyClick);
     btnClose := AddButton(ToolBar, 'DOOR_OUT', 'Close', AnyClick);
@@ -405,12 +415,16 @@ procedure TTextEditorForm.UpdateStatusBar();
   end;
 
 begin
+
   UpdateStatusBarLineColumn();
-  StatusBar.Panels[1].Text := Format('      %s', [Filer.EncodingToStr(Doc.FileReadInfo.Encoding)]);
-  StatusBar.Panels[2].Text := Format('      %s', [Filer.EolToStr(Doc.FileReadInfo.Eol)]);
-  StatusBar.Panels[3].Text := Format('      %s', [GetZoom()]);
-  StatusBar.Panels[4].Text := Format('      %s', [Doc.RealFilePath]);
+  StatusBar.Panels[1].Text := BoolToStr(TextEditor.ReadOnly, 'ReadOnly', 'Editable');
+  StatusBar.Panels[2].Text := Format('      %s', [Filer.EncodingToStr(Doc.FileReadInfo.Encoding)]);
+  StatusBar.Panels[3].Text := Format('      %s', [Filer.EolToStr(Doc.FileReadInfo.Eol)]);
+  StatusBar.Panels[4].Text := Format('      %s', [GetZoom()]);
+  StatusBar.Panels[5].Text := Format('      %s', [Doc.RealFilePath]);
 end;
+
+
 
 
 

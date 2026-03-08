@@ -15,6 +15,7 @@ uses
   , o_PageHandler
   , o_AppSettings
   , o_Docs
+
   ;
 
 type
@@ -23,6 +24,7 @@ type
 
   App = class
   private
+    class var fDocMonitorIntervalMSecs: Integer;
     class var fPageHandler: TPagerHandler;
     class var fDocs: TDocuments;
     class var fSettings: TAppSettings;
@@ -47,10 +49,14 @@ type
     class function  GetEditBoxIntValue(Box: TEdit; DefaultValue: Integer): Integer;
     class procedure ClosePage(const PageId: string);
 
+    // ● Miscs
+    class function GetSimpleIpcServerName(): string;
+
     // ● properties
     class property Settings: TAppSettings read fSettings;
     class property Docs: TDocuments read fDocs;
     class property PageHandler : TPagerHandler read fPageHandler write fPageHandler;
+    class property DocMonitorIntervalMSecs: Integer read fDocMonitorIntervalMSecs write fDocMonitorIntervalMSecs;
   end;
 
 
@@ -69,6 +75,7 @@ class constructor App.Create;
 begin
   fSettings := TAppSettings.Create();
   fSettings.Load();
+  fDocMonitorIntervalMSecs := 2500;
   fDocs := TDocuments.Create();
   fDocs.Load();
 end;
@@ -205,6 +212,15 @@ end;
 class procedure App.ClosePage(const PageId: string);
 begin
   PageHandler.ClosePage(PageId);
+end;
+
+class function App.GetSimpleIpcServerName(): string;
+begin
+  Result := 'SlatePad_Main_Instance';
+
+  {$ifdef UNIX}
+    Result := Result + '-' + GetEnvironmentVariable('USER');
+  {$endif};
 end;
 
 

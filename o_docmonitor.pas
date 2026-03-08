@@ -94,6 +94,14 @@ begin
 
     if Doc.DiskSignatureChanged(NewExists, NewMTimeUtc, NewSize) then
     begin
+
+      // Αν το αρχείο μόλις γράφτηκε από το SlatePad, μην το περάσεις για external change
+      if Doc.IsDiskEventSuppressed then
+      begin
+        Doc.UpdateDiskState();
+        Continue;
+      end;
+
       // αποφάσισε kind
       if (Doc.DiskExists = True) and (NewExists = False) then
         Kind := ddcDeleted

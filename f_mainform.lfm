@@ -229,7 +229,7 @@ object MainForm: TMainForm
     object mnuView: TMenuItem
       Caption = 'View'
       object mnuFindInFiles: TMenuItem
-        Caption = 'Find in Files'
+        Caption = 'Find in Files (Ctrl + R)'
       end
       object mnuToggleBottom: TMenuItem
         Caption = 'Toggle Bottom'

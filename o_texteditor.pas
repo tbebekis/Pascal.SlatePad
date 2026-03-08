@@ -304,11 +304,6 @@ begin
   if Result > Length(S) then Result := Length(S);
 end;
 
-
-
-
-
-
 procedure SelectRangeXY(Editor: TATSynEdit; X1, Y1, X2, Y2: Integer; HasSel: Boolean);
 begin
   Editor.Carets.Clear;
@@ -491,7 +486,6 @@ begin
   DoGotoCaret(TATCaretEdge.Top);  // caret index 0, ensure visible (scroll)
   Update;
 end;
-
 
 function TTextEditor.GetGutterVisible: Boolean;
 begin
@@ -719,8 +713,6 @@ begin
 end;
 
 procedure TTextEditor.KeyDown(var Key: Word; Shift: TShiftState);
-var
-  Term: UnicodeString;
 begin
   if (Shift = [ssCtrl]) and (Key = VK_F) then
   begin
@@ -741,8 +733,7 @@ begin
     Exit;
   end;
 
-  if Assigned(OnKeyDown) then
-    OnKeyDown(Self, Key, Shift);
+  inherited KeyDown(Key, Shift);
 end;
 
 function TTextEditor.FindNext(Backward: Boolean): Integer;

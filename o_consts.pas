@@ -17,6 +17,8 @@ const
   ,'FOLDER_GO'
   );
 
+   // IPC_SERVER_ID = 'slatepad_main_instance';
+
 implementation
 
 end.

@@ -45,6 +45,8 @@ type
     procedure TitleChanged(); virtual;
     procedure AdjustTabTitle(); virtual;
 
+    procedure ClosePage(); virtual;
+
     // ● editor handler
     procedure SaveEditorText(TextEditor: TObject); virtual;
 
@@ -138,6 +140,11 @@ end;
 
 procedure TPageForm.AdjustTabTitle();
 begin
+end;
+
+procedure TPageForm.ClosePage();
+begin
+  Close();
 end;
 
 procedure TPageForm.OnBroadcasterEvent(Args: TBroadcasterArgs);

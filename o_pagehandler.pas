@@ -261,7 +261,7 @@ begin
   begin
     if not Container.CanCloseContainer() then
       Exit;
-    Container.Close;
+    Container.ClosePage();
     Container.Free();
   end;
 

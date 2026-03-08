@@ -17,6 +17,7 @@ uses
   , ComCtrls
   , ExtCtrls
   , StdCtrls
+  , SimpleIpc
   , Generics.Collections
   , o_PageHandler
   , o_Docs
@@ -58,10 +59,13 @@ type
     PageHandler : TPagerHandler;
     FindAndReplaceInFiles: TFindAndReplaceInFiles;
     DocMonitor : TDocMonitor;
+    IpcServerTimer: TTimer;
+    IpcServer: TSimpleIPCServer;
 
     procedure FormInitialize();
     procedure FormFinalize();
     function GetBottomPagerVisible: Boolean;
+    procedure IpcServer_OnMessage(Sender: TObject);
 
     procedure LoadDocuments();
     procedure PerformFindInFiles();
@@ -73,6 +77,7 @@ type
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure tvFindResults_DoubleClick(Sender: TObject);
     procedure HandleDocDiskChange(Sender: TObject; Doc: TTextDocument; Kind: TDocDiskChangeKind);
+    procedure IpcServerTimer_OnTimer(Sender: TObject);
 
     procedure NewDoc();
     procedure OpenDoc(); overload;
@@ -129,7 +134,25 @@ begin
   inherited Create(AOwner);
 
   KeyPreview := True;
+
   LogBox.Initialize(edtLog);
+
+  // https://wiki.freepascal.org/SimpleIPC
+  IpcServer := TSimpleIPCServer.Create(Self);
+  IpcServer.ServerID := App.GetSimpleIpcServerName();
+  IpcServer.MaxQueue := 1;
+  IpcServer.Global := True;
+  IpcServer.SynchronizeEvents := True;
+  IpcServer.Threaded := False;
+  IpcServer.OnMessage := IpcServer_OnMessage;
+
+  IpcServerTimer := TTimer.Create(Self);
+  IpcServerTimer.Enabled := False;
+  IpcServerTimer.Interval := 1000 * 3;
+  IpcServerTimer.OnTimer := IpcServerTimer_OnTimer;
+  IpcServerTimer.Enabled := True;
+
+  IpcServer.StartServer;
 
   //fBroadcasterToken := Broadcaster.Register(OnBroadcasterEvent);
   IconList.SetResourceNames(IconResourceNames);
@@ -202,8 +225,6 @@ begin
   end;
 end;
 
-
-
 procedure TMainForm.DoCreate;
 begin
   inherited DoCreate;
@@ -244,8 +265,8 @@ procedure TMainForm.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Shift = [ssCtrl]) and (Key = VK_R) then
   begin
-    Key := 0;
     PerformFindInFiles();
+    Key := 0;
     Exit;
   end;
 
@@ -303,7 +324,7 @@ begin
 
   DocMonitor := TDocMonitor.Create(Self, App.Docs);
   DocMonitor.OnDiskChange := HandleDocDiskChange;
-  DocMonitor.Start(2000);
+  DocMonitor.Start(App.DocMonitorIntervalMSecs);
 end;
 
 procedure TMainForm.FormFinalize();
@@ -684,8 +705,25 @@ begin
   finally
     DocMonitor.Start();
   end;
+end;
 
+procedure TMainForm.IpcServerTimer_OnTimer(Sender: TObject);
+begin
+  if IpcServer.PeekMessage(0, True) then
+    begin
+      IpcServer.ReadMessage;
+      //LogBox.AppendLine('IPC Message arrived');
+    end;
+end;
 
+procedure TMainForm.IpcServer_OnMessage(Sender: TObject);
+var
+  FilePath : string;
+begin
+  FilePath := Trim(IpcServer.StringMessage);
+  if (FilePath <> '') and FileExists(FilePath) then
+    OpenDoc(FilePath);
+  //LogBox.AppendLine('Server Message: ' + FilePath);
 end;
 
 end.
